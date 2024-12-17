@@ -19,6 +19,13 @@
       }
     ],
     "paths": {
+      "@atoms/*": ["./components/atoms/*"],
+      "@components/*": ["./components/*"],
+      "@molecules/*": ["./components/molecules/*"],
+      "@organisms/*": ["./components/organisms/*"],
+      "@pages/*": ["./pages/*"],
+      "@styles/*": ["./styles/*"],
+      "@public/*": ["./public/*"],
       "@/*": ["./*"]
     }
   },

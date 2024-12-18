@@ -1,0 +1,153 @@
+"use client";
+
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import {
+  Eye,
+  EyeOff,
+  Mail,
+  Lock,
+  Github,
+  ChromeIcon as Google,
+  Twitter,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import Link from "next/link";
+
+type FormData = {
+  email: string;
+  password: string;
+};
+
+export function LoginForm() {
+  const [showPassword, setShowPassword] = useState(false);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormData>();
+
+  const onSubmit = (data: FormData) => {
+    console.log(data);
+    // Handle form submission here
+  };
+
+  return (
+    <div className="w-full max-w-md mx-auto space-y-8">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="space-y-4"
+      >
+        <div className="space-y-2">
+          <Label htmlFor="email">Email</Label>
+          <div className="relative">
+            <Input
+              id="email"
+              type="email"
+              placeholder="Enter your email"
+              {...register("email", {
+                required: "Email is required",
+                pattern: {
+                  value: /\S+@\S+\.\S+/,
+                  message: "Invalid email address",
+                },
+              })}
+              className="pl-10"
+            />
+            <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+          </div>
+          {errors.email && (
+            <p className="text-red-500 text-sm">{errors.email.message}</p>
+          )}
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="password">Password</Label>
+          <div className="relative">
+            <Input
+              id="password"
+              type={showPassword ? "text" : "password"}
+              placeholder="Enter your password"
+              {...register("password", {
+                required: "Password is required",
+                minLength: {
+                  value: 8,
+                  message: "Password must be at least 8 characters",
+                },
+              })}
+              className="pl-10 pr-10"
+            />
+            <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+            >
+              {showPassword ? (
+                <EyeOff className="h-5 w-5" />
+              ) : (
+                <Eye className="h-5 w-5" />
+              )}
+            </button>
+          </div>
+          {errors.password && (
+            <p className="text-red-500 text-sm">{errors.password.message}</p>
+          )}
+        </div>
+
+        <Button
+          type="submit"
+          className="w-full !mt-10"
+        >
+          Log in
+        </Button>
+      </form>
+
+      <div className="relative">
+        <div className="absolute inset-0 flex items-center">
+          <span className="w-full border-t" />
+        </div>
+        <div className="relative flex justify-center text-xs uppercase">
+          <span className="bg-background px-2 text-muted-foreground">
+            Or continue with
+          </span>
+        </div>
+      </div>
+
+      <div className="flex justify-center space-x-4">
+        <Button
+          variant="outline"
+          size="icon"
+        >
+          <Github className="h-5 w-5" />
+        </Button>
+        <Button
+          variant="outline"
+          size="icon"
+        >
+          <Google className="h-5 w-5" />
+        </Button>
+        <Button
+          variant="outline"
+          size="icon"
+        >
+          <Twitter className="h-5 w-5" />
+        </Button>
+      </div>
+
+      <div className="text-center">
+        <p className="text-sm text-gray-600">
+          Don&apos;t have an account?{" "}
+          <Link
+            href="/auth/register"
+            className="text-secondary-600 hover:underline"
+          >
+            Register here
+          </Link>
+        </p>
+      </div>
+    </div>
+  );
+}

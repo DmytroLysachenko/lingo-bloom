@@ -15,7 +15,7 @@ type FormData = {
   repeatPassword: string;
 };
 
-export function RegisterForm() {
+const RegisterForm = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showRepeatPassword, setShowRepeatPassword] = useState(false);
   const {
@@ -39,7 +39,12 @@ export function RegisterForm() {
         className="space-y-4"
       >
         <div className="space-y-2">
-          <Label htmlFor="name">Name</Label>
+          <Label
+            htmlFor="name"
+            className="text-primary-700"
+          >
+            Name
+          </Label>
           <div className="relative">
             <Input
               id="name"
@@ -52,17 +57,22 @@ export function RegisterForm() {
                   message: "Name must be at least 2 characters",
                 },
               })}
-              className="pl-10"
+              className="pl-10 border-primary-200 focus:border-primary-500 focus:ring-primary-500"
             />
-            <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+            <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-primary-400 h-5 w-5" />
           </div>
           {errors.name && (
-            <p className="text-red-500 text-sm">{errors.name.message}</p>
+            <p className="text-destructive text-sm">{errors.name.message}</p>
           )}
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="email">Email</Label>
+          <Label
+            htmlFor="email"
+            className="text-primary-700"
+          >
+            Email
+          </Label>
           <div className="relative">
             <Input
               id="email"
@@ -75,17 +85,22 @@ export function RegisterForm() {
                   message: "Invalid email address",
                 },
               })}
-              className="pl-10"
+              className="pl-10 border-primary-200 focus:border-primary-500 focus:ring-primary-500"
             />
-            <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+            <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-primary-400 h-5 w-5" />
           </div>
           {errors.email && (
-            <p className="text-red-500 text-sm">{errors.email.message}</p>
+            <p className="text-destructive text-sm">{errors.email.message}</p>
           )}
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="password">Password</Label>
+          <Label
+            htmlFor="password"
+            className="text-primary-700"
+          >
+            Password
+          </Label>
           <div className="relative">
             <Input
               id="password"
@@ -98,13 +113,13 @@ export function RegisterForm() {
                   message: "Password must be at least 8 characters",
                 },
               })}
-              className="pl-10 pr-10"
+              className="pl-10 pr-10 border-primary-200 focus:border-primary-500 focus:ring-primary-500"
             />
-            <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+            <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-primary-400 h-5 w-5" />
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-primary-400"
             >
               {showPassword ? (
                 <EyeOff className="h-5 w-5" />
@@ -114,12 +129,19 @@ export function RegisterForm() {
             </button>
           </div>
           {errors.password && (
-            <p className="text-red-500 text-sm">{errors.password.message}</p>
+            <p className="text-destructive text-sm">
+              {errors.password.message}
+            </p>
           )}
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="repeatPassword">Repeat Password</Label>
+          <Label
+            htmlFor="repeatPassword"
+            className="text-primary-700"
+          >
+            Repeat Password
+          </Label>
           <div className="relative">
             <Input
               id="repeatPassword"
@@ -130,13 +152,13 @@ export function RegisterForm() {
                 validate: (value) =>
                   value === password || "Passwords do not match",
               })}
-              className="pl-10 pr-10"
+              className="pl-10 pr-10 border-primary-200 focus:border-primary-500 focus:ring-primary-500"
             />
-            <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+            <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-primary-400 h-5 w-5" />
             <button
               type="button"
               onClick={() => setShowRepeatPassword(!showRepeatPassword)}
-              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-primary-400"
             >
               {showRepeatPassword ? (
                 <EyeOff className="h-5 w-5" />
@@ -146,7 +168,7 @@ export function RegisterForm() {
             </button>
           </div>
           {errors.repeatPassword && (
-            <p className="text-red-500 text-sm">
+            <p className="text-destructive text-sm">
               {errors.repeatPassword.message}
             </p>
           )}
@@ -154,18 +176,18 @@ export function RegisterForm() {
 
         <Button
           type="submit"
-          className="w-full !mt-10"
+          className="w-full bg-primary-500 hover:bg-primary-600 text-white"
         >
           Register
         </Button>
       </form>
 
       <div className="text-center">
-        <p className="text-sm text-gray-600">
+        <p className="text-sm text-primary-600">
           Already have an account?{" "}
           <Link
             href="/auth/login"
-            className=" text-secondary-600 underline-offset-2 hover:underline"
+            className="text-primary-700 hover:underline"
           >
             Login here
           </Link>
@@ -173,4 +195,6 @@ export function RegisterForm() {
       </div>
     </div>
   );
-}
+};
+
+export default RegisterForm;

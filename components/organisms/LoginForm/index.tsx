@@ -21,7 +21,7 @@ type FormData = {
   password: string;
 };
 
-export function LoginForm() {
+const LoginForm = () => {
   const [showPassword, setShowPassword] = useState(false);
   const {
     register,
@@ -41,7 +41,12 @@ export function LoginForm() {
         className="space-y-4"
       >
         <div className="space-y-2">
-          <Label htmlFor="email">Email</Label>
+          <Label
+            htmlFor="email"
+            className="text-primary-700"
+          >
+            Email
+          </Label>
           <div className="relative">
             <Input
               id="email"
@@ -54,17 +59,22 @@ export function LoginForm() {
                   message: "Invalid email address",
                 },
               })}
-              className="pl-10"
+              className="pl-10 border-primary-200 focus:border-primary-500 focus:ring-primary-500"
             />
-            <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+            <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-primary-400 h-5 w-5" />
           </div>
           {errors.email && (
-            <p className="text-red-500 text-sm">{errors.email.message}</p>
+            <p className="text-destructive text-sm">{errors.email.message}</p>
           )}
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="password">Password</Label>
+          <Label
+            htmlFor="password"
+            className="text-primary-700"
+          >
+            Password
+          </Label>
           <div className="relative">
             <Input
               id="password"
@@ -77,13 +87,13 @@ export function LoginForm() {
                   message: "Password must be at least 8 characters",
                 },
               })}
-              className="pl-10 pr-10"
+              className="pl-10 pr-10 border-primary-200 focus:border-primary-500 focus:ring-primary-500"
             />
-            <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+            <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-primary-400 h-5 w-5" />
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-primary-400"
             >
               {showPassword ? (
                 <EyeOff className="h-5 w-5" />
@@ -93,13 +103,15 @@ export function LoginForm() {
             </button>
           </div>
           {errors.password && (
-            <p className="text-red-500 text-sm">{errors.password.message}</p>
+            <p className="text-destructive text-sm">
+              {errors.password.message}
+            </p>
           )}
         </div>
 
         <Button
           type="submit"
-          className="w-full !mt-10"
+          className="w-full bg-primary-500 hover:bg-primary-600 text-white"
         >
           Log in
         </Button>
@@ -107,10 +119,10 @@ export function LoginForm() {
 
       <div className="relative">
         <div className="absolute inset-0 flex items-center">
-          <span className="w-full border-t" />
+          <span className="w-full border-t border-primary-200" />
         </div>
         <div className="relative flex justify-center text-xs uppercase">
-          <span className="bg-background px-2 text-muted-foreground">
+          <span className="bg-background px-2 text-primary-500">
             Or continue with
           </span>
         </div>
@@ -120,29 +132,32 @@ export function LoginForm() {
         <Button
           variant="outline"
           size="icon"
+          className="border-primary-200 text-primary-700 hover:bg-primary-50"
         >
           <Github className="h-5 w-5" />
         </Button>
         <Button
           variant="outline"
           size="icon"
+          className="border-primary-200 text-primary-700 hover:bg-primary-50"
         >
           <Google className="h-5 w-5" />
         </Button>
         <Button
           variant="outline"
           size="icon"
+          className="border-primary-200 text-primary-700 hover:bg-primary-50"
         >
           <Twitter className="h-5 w-5" />
         </Button>
       </div>
 
       <div className="text-center">
-        <p className="text-sm text-gray-600">
+        <p className="text-sm text-primary-600">
           Don&apos;t have an account?{" "}
           <Link
             href="/auth/register"
-            className="text-secondary-600 hover:underline"
+            className="text-primary-700 hover:underline"
           >
             Register here
           </Link>
@@ -150,4 +165,6 @@ export function LoginForm() {
       </div>
     </div>
   );
-}
+};
+
+export default LoginForm;

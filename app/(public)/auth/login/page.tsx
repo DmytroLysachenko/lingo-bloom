@@ -1,12 +1,8 @@
-import { LoginForm } from "@components/organisms/LoginForm";
+import LoginPage from "@components/pages/LoginPage";
 import React from "react";
 
 const page = () => {
-  return (
-    <div className="flex h-screen items-center justify-center">
-      <LoginForm />
-    </div>
-  );
+  return <LoginPage />;
 };
 
 export default page;

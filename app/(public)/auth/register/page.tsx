@@ -1,12 +1,8 @@
-import { RegisterForm } from "@components/organisms/RegisterForm";
+import RegisterPage from "@components/pages/RegisterPage";
 import React from "react";
 
 const page = () => {
-  return (
-    <div className="flex h-screen items-center justify-center">
-      <RegisterForm />
-    </div>
-  );
+  return <RegisterPage />;
 };
 
 export default page;

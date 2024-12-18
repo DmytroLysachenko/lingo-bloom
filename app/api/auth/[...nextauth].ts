@@ -1,27 +1,29 @@
-// pages/api/auth/[...nextauth].ts
-
 import NextAuth from "next-auth";
-import GoogleProvider from "next-auth/providers/google"; // Example: Google authentication
+import GoogleProvider from "next-auth/providers/google";
+import GithubProvider from "next-auth/providers/github";
+import { PrismaAdapter } from "@next-auth/prisma-adapter";
+import { prisma } from "@/lib/prisma";
 
-export const authOptions = {
+export default NextAuth({
+  adapter: PrismaAdapter(prisma), // Use Prisma adapter for PostgreSQL
   providers: [
+    GithubProvider({
+      clientId: process.env.GITHUB_CLIENT_ID!,
+      clientSecret: process.env.GITHUB_CLIENT_SECRET!,
+    }),
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
     }),
-    // Add more providers as needed
   ],
+  session: {
+    strategy: "database", // Store sessions in your PostgreSQL database
+  },
   callbacks: {
-    async jwt({ token, account }) {
-      // You can add custom logic to your JWT here if needed
-      return token;
-    },
-    async session({ session, token }) {
-      // Customize session if needed
+    async session({ session, user }) {
+      session.user.id = user.id;
       return session;
     },
   },
-  secret: process.env.JWT_SECRET, // Optional: add a secret for JWT signing
-};
-
-export default NextAuth(authOptions);
+  secret: process.env.NEXTAUTH_SECRET,
+});

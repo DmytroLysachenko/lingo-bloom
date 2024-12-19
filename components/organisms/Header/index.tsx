@@ -24,7 +24,14 @@ const Header = () => {
         <nav className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-2 w-full sm:w-auto">
           <div className="w-full sm:w-auto mb-2 sm:mb-0">
             <LanguageSelector />
-          </div>
+          </div>{" "}
+          <Button
+            asChild
+            variant="ghost"
+            className="w-full sm:w-auto text-primary-700 hover:text-primary-800 hover:bg-primary-100"
+          >
+            <Link href="/tasks">Create Quiz</Link>
+          </Button>
           {pathname !== "/auth/login" && (
             <Button
               asChild

@@ -32,21 +32,21 @@ const Header = () => {
           >
             <Link href="/tasks">Create Quiz</Link>
           </Button>
-          {pathname !== "/auth/login" && (
+          {pathname !== "/login" && (
             <Button
               asChild
               variant="ghost"
               className="w-full sm:w-auto text-primary-700 hover:text-primary-800 hover:bg-primary-100"
             >
-              <Link href="/auth/login">Login</Link>
+              <Link href="/login">Login</Link>
             </Button>
           )}
-          {pathname !== "/auth/register" && (
+          {pathname !== "/register" && (
             <Button
               asChild
               className="w-full sm:w-auto bg-secondary-500 hover:bg-secondary-600 text-white"
             >
-              <Link href="/auth/register">Sign Up</Link>
+              <Link href="/register">Sign Up</Link>
             </Button>
           )}
         </nav>

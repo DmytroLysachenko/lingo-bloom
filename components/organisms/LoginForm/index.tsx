@@ -15,6 +15,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
+import { signIn } from "next-auth/react";
 
 type FormData = {
   email: string;
@@ -32,6 +33,10 @@ const LoginForm = () => {
   const onSubmit = (data: FormData) => {
     console.log(data);
     // Handle form submission here
+  };
+
+  const handleGitHubLogin = () => {
+    signIn("github", { redirectTo: "/dashboard" });
   };
 
   return (
@@ -133,6 +138,7 @@ const LoginForm = () => {
           variant="outline"
           size="icon"
           className="border-primary-200 text-primary-700 hover:bg-primary-50"
+          onClick={handleGitHubLogin}
         >
           <Github className="h-5 w-5" />
         </Button>
@@ -156,7 +162,7 @@ const LoginForm = () => {
         <p className="text-sm text-primary-600">
           Don&apos;t have an account?{" "}
           <Link
-            href="/auth/register"
+            href="/register"
             className="text-primary-700 hover:underline"
           >
             Register here

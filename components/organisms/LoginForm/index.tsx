@@ -9,7 +9,6 @@ import {
   Lock,
   Github,
   ChromeIcon as Google,
-  Twitter,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -37,6 +36,9 @@ const LoginForm = () => {
 
   const handleGitHubLogin = () => {
     signIn("github", { redirectTo: "/dashboard" });
+  };
+  const handleGoogleLogin = () => {
+    signIn("google", { redirectTo: "/dashboard" });
   };
 
   return (
@@ -146,15 +148,9 @@ const LoginForm = () => {
           variant="outline"
           size="icon"
           className="border-primary-200 text-primary-700 hover:bg-primary-50"
+          onClick={handleGoogleLogin}
         >
           <Google className="h-5 w-5" />
-        </Button>
-        <Button
-          variant="outline"
-          size="icon"
-          className="border-primary-200 text-primary-700 hover:bg-primary-50"
-        >
-          <Twitter className="h-5 w-5" />
         </Button>
       </div>
 

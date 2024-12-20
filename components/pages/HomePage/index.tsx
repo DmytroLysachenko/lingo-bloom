@@ -1,9 +1,12 @@
+import { auth } from "@/auth";
 import { Button } from "@/components/ui/button";
 import FeatureCard from "@atoms/FeatureCard";
 import { ArrowRight, BookOpen, Globe, Users } from "lucide-react";
 import Link from "next/link";
 
-const HomePage = () => {
+const HomePage = async () => {
+  const session = await auth();
+
   return (
     <div className="bg-gradient-to-r from-primary-500 to-secondary-500 text-white">
       <div className="container mx-auto px-4 py-16 sm:py-24 lg:py-32">
@@ -22,7 +25,7 @@ const HomePage = () => {
               size="lg"
               className="text-lg px-8 py-3 bg-accent-500 hover:bg-accent-600 text-white"
             >
-              <Link href="/tasks">
+              <Link href={session ? "/tasks" : "/login"}>
                 Start Learning Now! <ArrowRight className="ml-2 h-5 w-5" />
               </Link>
             </Button>

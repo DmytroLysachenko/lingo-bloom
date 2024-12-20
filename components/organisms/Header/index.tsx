@@ -1,13 +1,13 @@
-"use client";
-
 import Link from "next/link";
 import { Flower } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { usePathname } from "next/navigation";
-import LanguageSelector from "@molecules/LanguageSelector";
 
-const Header = () => {
-  const pathname = usePathname();
+import LanguageSelector from "@molecules/LanguageSelector";
+import { auth } from "@/auth";
+import AuthButtons from "@components/molecules/AuthButtons";
+
+const Header = async () => {
+  const session = await auth();
 
   return (
     <header className="w-full py-4 px-4 sm:px-6 lg:px-8 bg-primary-50 border-b border-primary-200">
@@ -21,33 +21,20 @@ const Header = () => {
             Lingo Bloom
           </span>
         </Link>
-        <nav className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-2 w-full sm:w-auto">
+        <nav className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-8 w-full sm:w-auto">
           <div className="w-full sm:w-auto mb-2 sm:mb-0">
             <LanguageSelector />
-          </div>{" "}
-          <Button
-            asChild
-            variant="ghost"
-            className="w-full sm:w-auto text-primary-700 hover:text-primary-800 hover:bg-primary-100"
-          >
-            <Link href="/tasks">Create Quiz</Link>
-          </Button>
-          {pathname !== "/login" && (
+          </div>
+          {session ? (
             <Button
               asChild
               variant="ghost"
-              className="w-full sm:w-auto text-primary-700 hover:text-primary-800 hover:bg-primary-100"
+              className="w-full sm:w-auto text-primary-700 hover:text-primary-800 hover:bg-primary-100 bg-neutral-200"
             >
-              <Link href="/login">Login</Link>
+              <Link href="/tasks">Create Quiz</Link>
             </Button>
-          )}
-          {pathname !== "/register" && (
-            <Button
-              asChild
-              className="w-full sm:w-auto bg-secondary-500 hover:bg-secondary-600 text-white"
-            >
-              <Link href="/register">Sign Up</Link>
-            </Button>
+          ) : (
+            <AuthButtons />
           )}
         </nav>
       </div>

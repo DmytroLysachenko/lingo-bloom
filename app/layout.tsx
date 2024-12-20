@@ -22,20 +22,22 @@ export const metadata: Metadata = {
   description: "Start learning a new language today",
 };
 
-export default function RootLayout({
+const RootLayout = async ({
   children,
 }: Readonly<{
   children: React.ReactNode;
-}>) {
+}>) => {
   return (
     <html lang="en">
       <body
         className={`${inter.variable} ${playfairDisplay.variable} font-sans`}
       >
         <Header />
-        {children}
+        <main>{children}</main>
         <Footer />
       </body>
     </html>
   );
-}
+};
+
+export default RootLayout;

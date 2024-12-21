@@ -26,13 +26,16 @@ const Header = async () => {
             <LanguageSelector />
           </div>
           {session ? (
-            <Button
-              asChild
-              variant="ghost"
-              className="w-full sm:w-auto text-primary-700 hover:text-primary-800 hover:bg-primary-100 bg-neutral-200"
-            >
-              <Link href="/tasks">Create Quiz</Link>
-            </Button>
+            <>
+              <Button
+                asChild
+                variant="ghost"
+                className="w-full sm:w-auto text-primary-700 hover:text-primary-800 hover:bg-primary-100 bg-neutral-200"
+              >
+                <Link href="/tasks">Create Quiz</Link>
+              </Button>
+              <AuthButtons isLoggedIn />
+            </>
           ) : (
             <AuthButtons />
           )}

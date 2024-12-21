@@ -4,11 +4,24 @@ import React from "react";
 import { usePathname } from "next/navigation";
 import { Button } from "@components/ui/button";
 import Link from "next/link";
+import { signOut } from "@/auth";
 
-const AuthButtons = () => {
+interface AuthButtonsProps {
+  isLoggedIn?: boolean;
+}
+
+const AuthButtons = ({ isLoggedIn }: AuthButtonsProps) => {
   const pathname = usePathname();
 
-  return (
+  return isLoggedIn ? (
+    <Button
+      asChild
+      className="w-full sm:w-auto bg-secondary-500 hover:bg-secondary-600 text-white"
+      onClick={() => signOut()}
+    >
+      Log out
+    </Button>
+  ) : (
     <>
       {pathname !== "/login" && (
         <Button

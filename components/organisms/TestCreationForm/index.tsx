@@ -19,11 +19,7 @@ interface FormData {
   taskType: string;
 }
 
-interface QuizCreationFormProps {
-  setTasks: React.Dispatch<React.SetStateAction<Task[]>>;
-}
-
-const QuizCreationForm = ({ setTasks }: QuizCreationFormProps) => {
+const TestCreationForm = () => {
   const {
     control,
     handleSubmit,
@@ -31,9 +27,7 @@ const QuizCreationForm = ({ setTasks }: QuizCreationFormProps) => {
   } = useForm<FormData>();
 
   const onSubmit = async (data: FormData) => {
-    const response = await axios.post("/api/quiz-creation", data);
-
-    setTasks([...response.data]);
+    const response = await axios.post("/api/test", data);
   };
   // Here you would typically send this data to your backend or state management
 
@@ -159,4 +153,4 @@ const QuizCreationForm = ({ setTasks }: QuizCreationFormProps) => {
   );
 };
 
-export default QuizCreationForm;
+export default TestCreationForm;

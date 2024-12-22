@@ -39,7 +39,7 @@ const LanguageSelector = () => {
           <DropdownMenuItem
             key={lang.code}
             onClick={() => setLanguage(lang)}
-            className="justify-between"
+            className="justify-between cursor-pointer"
           >
             <span>
               {lang.flag} {lang.name}

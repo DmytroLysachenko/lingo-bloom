@@ -32,7 +32,7 @@ const Header = async () => {
                 variant="ghost"
                 className="w-full sm:w-auto text-primary-700 hover:text-primary-800 hover:bg-primary-100 bg-neutral-200"
               >
-                <Link href="/tasks">Create Quiz</Link>
+                <Link href="/test-creation">Create Test</Link>
               </Button>
               <AuthButtons isLoggedIn />
             </>

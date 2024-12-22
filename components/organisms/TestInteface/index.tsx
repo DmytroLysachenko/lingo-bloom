@@ -6,11 +6,11 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Task } from "@/types";
 
-interface QuizInterfaceProps {
+interface TestInterfaceProps {
   tasks: Task[];
 }
 
-const QuizInterface = ({ tasks }: QuizInterfaceProps) => {
+const TestInterface = ({ tasks }: TestInterfaceProps) => {
   const [currentTaskIndex, setCurrentTaskIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [answered, setAnswered] = useState(false);
@@ -117,4 +117,4 @@ const QuizInterface = ({ tasks }: QuizInterfaceProps) => {
   );
 };
 
-export default QuizInterface;
+export default TestInterface;

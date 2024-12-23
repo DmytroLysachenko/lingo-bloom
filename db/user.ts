@@ -17,6 +17,12 @@ export const findUserById = async (id: string) => {
   });
 };
 
+export const findUserByEmail = async (email: string) => {
+  return prisma.user.findUnique({
+    where: { email },
+  });
+};
+
 export const updateUser = async (id: string, data: IUser) => {
   return prisma.user.update({
     where: { id },

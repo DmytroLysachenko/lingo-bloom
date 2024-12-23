@@ -4,6 +4,7 @@ import "./globals.css";
 import Header from "@organisms/Header";
 import Footer from "@components/organisms/Footer";
 import AdminPanel from "@components/organisms/AdminPanel";
+import { auth } from "@/auth";
 
 // Import Inter and Playfair Display fonts
 const inter = Inter({
@@ -28,13 +29,17 @@ const RootLayout = async ({
 }: Readonly<{
   children: React.ReactNode;
 }>) => {
+  const session = await auth();
+
+  console.log(session);
+
   return (
     <html lang="en">
       <body
         className={`${inter.variable} ${playfairDisplay.variable} font-sans`}
       >
         <Header />
-        <AdminPanel />
+        {session?.user.role === "admin" && <AdminPanel />}
         <main>{children}</main>
         <Footer />
       </body>

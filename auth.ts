@@ -15,4 +15,18 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   jwt: {
     maxAge: 60 * 60 * 24 * 7,
   },
+  callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token.role = user.role; // Ensure user role is stored in the token
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      if (session.user) {
+        session.user.role = token.role as string; // Assign the role to the session
+      }
+      return session;
+    },
+  },
 });

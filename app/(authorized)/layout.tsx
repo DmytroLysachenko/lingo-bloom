@@ -11,8 +11,6 @@ const Layout = async ({
 
   if (!session?.user) return redirect("/login");
 
-  console.log(session.user);
-
   return children;
 };
 

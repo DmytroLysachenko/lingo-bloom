@@ -1,5 +1,5 @@
 import { tasksA1, tasksA2, tasksB1, tasksB2 } from "@/constants/mockedData";
-import { generatePolishGrammarRule } from "@/lib/ai";
+import { prisma } from "@/db/prisma";
 import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
@@ -20,10 +20,7 @@ export async function POST(request: Request) {
   }
 }
 
-export async function GET() {
-  const data = await generatePolishGrammarRule();
-
-  console.log(JSON.parse(data.choices[0].message.content as string));
-
-  return NextResponse.json({ message: "Success!!!", data }, { status: 200 });
+export async function GET(request: Request) {
+  console.log(newTopic);
+  return NextResponse.json({ message: "All okay" }, { status: 200 });
 }

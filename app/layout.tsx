@@ -3,6 +3,7 @@ import { Inter, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import Header from "@organisms/Header";
 import Footer from "@components/organisms/Footer";
+import AdminPanel from "@components/organisms/AdminPanel";
 
 // Import Inter and Playfair Display fonts
 const inter = Inter({
@@ -33,6 +34,7 @@ const RootLayout = async ({
         className={`${inter.variable} ${playfairDisplay.variable} font-sans`}
       >
         <Header />
+        <AdminPanel />
         <main>{children}</main>
         <Footer />
       </body>

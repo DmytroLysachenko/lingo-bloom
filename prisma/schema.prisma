@@ -79,12 +79,11 @@ model LanguageLevel {
 
 model GrammarRule {
   id          Int      @id @default(autoincrement())
-  title       String
-  description String
-  example     String?
+  data        Json     // Includes title, description, and example in multiple languages
   languageId  Int
   language    Language @relation(fields: [languageId], references: [id])
 }
+
 
 model TaskType {
   id    Int    @id @default(autoincrement())

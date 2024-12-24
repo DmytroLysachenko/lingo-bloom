@@ -30,8 +30,15 @@ const LoginForm = () => {
   } = useForm<FormData>();
 
   const onSubmit = (data: FormData) => {
-    console.log(data);
-    // Handle form submission here
+    try {
+      signIn("credentials", {
+        email: data.email,
+        password: data.password,
+        redirectTo: "/dashboard",
+      });
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const handleGitHubLogin = () => {

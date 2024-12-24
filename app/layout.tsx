@@ -5,6 +5,7 @@ import Header from "@organisms/Header";
 import Footer from "@components/organisms/Footer";
 import AdminPanel from "@components/organisms/AdminPanel";
 import { auth } from "@/auth";
+import { Toaster } from "@components/ui/toaster";
 
 // Import Inter and Playfair Display fonts
 const inter = Inter({
@@ -39,6 +40,7 @@ const RootLayout = async ({
         <Header />
         {session?.user.role === "admin" && <AdminPanel />}
         <main>{children}</main>
+        <Toaster />
         <Footer />
       </body>
     </html>

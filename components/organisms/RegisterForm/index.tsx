@@ -7,6 +7,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
+import axios from "axios";
+import { useToast } from "@/hooks/use-toast";
+import { useRouter } from "next/navigation";
 
 type FormData = {
   name: string;
@@ -20,14 +23,34 @@ const RegisterForm = () => {
   const [showRepeatPassword, setShowRepeatPassword] = useState(false);
   const {
     register,
+    reset,
     handleSubmit,
     formState: { errors },
     watch,
   } = useForm<FormData>();
+  const { toast } = useToast();
+  const router = useRouter();
 
-  const onSubmit = (data: FormData) => {
-    console.log(data);
-    // Handle form submission here
+  const onSubmit = async (data: FormData) => {
+    try {
+      const response = await axios.post("/api/auth/register", data);
+
+      toast({
+        title: "Success!",
+        description: response.data.message,
+        variant: "default",
+        color: "green",
+      });
+
+      reset();
+      router.push("/login");
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: error.response.data.message,
+        variant: "destructive",
+      });
+    }
   };
 
   const password = watch("password");

@@ -1,5 +1,7 @@
+import { LANGUAGES } from "@/constants";
 import { tasksA1, tasksA2, tasksB1, tasksB2 } from "@/constants/mockedData";
-import { generatePolishGrammarRule } from "@/lib/ai";
+import { createGrammarRule, getCurrentlyExistingRules } from "@/db/grammarRule";
+import { generateGrammarRule } from "@/lib/ai";
 import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
@@ -21,9 +23,20 @@ export async function POST(request: Request) {
 }
 
 export async function GET() {
-  const data = await generatePolishGrammarRule();
+  const language = LANGUAGES["pl"];
 
-  console.log(JSON.parse(data.choices[0].message.content as string));
+  const { id, name } = language;
 
-  return NextResponse.json({ message: "Success!!!", data }, { status: 200 });
+  const existingRules = await getCurrentlyExistingRules(id);
+
+  const response = await generateGrammarRule(name, existingRules);
+
+  console.log(response);
+
+  const newRule = await createGrammarRule({
+    languageId: id,
+    data: response.choices[0].message.content as string,
+  });
+
+  return NextResponse.json({ message: "Success!!!", newRule }, { status: 200 });
 }

@@ -4,7 +4,7 @@ import React from "react";
 import { usePathname } from "next/navigation";
 import { Button } from "@components/ui/button";
 import Link from "next/link";
-import { signOut } from "@/auth";
+import { signOut } from "next-auth/react";
 
 interface AuthButtonsProps {
   isLoggedIn?: boolean;
@@ -12,12 +12,12 @@ interface AuthButtonsProps {
 
 const AuthButtons = ({ isLoggedIn }: AuthButtonsProps) => {
   const pathname = usePathname();
+  console.log(isLoggedIn, "Hui");
 
   return isLoggedIn ? (
     <Button
-      asChild
       className="w-full sm:w-auto bg-secondary-500 hover:bg-secondary-600 text-white"
-      onClick={() => signOut()}
+      onClick={() => signOut({ redirectTo: "/login" })}
     >
       Log out
     </Button>

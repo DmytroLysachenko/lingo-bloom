@@ -11,6 +11,15 @@ export const findAllGrammarRules = async (languageId: number) => {
   });
 };
 
+export const getCurrentlyExistingRules = async (languageId: number) => {
+  const existingRules = await findAllGrammarRules(languageId);
+
+  return existingRules.map((rule) => {
+    const data = JSON.parse(rule.data as string);
+    return data.en.title;
+  });
+};
+
 export const findGrammarRuleById = async (id: number) => {
   return prisma.grammarRule.findUnique({
     where: { id },

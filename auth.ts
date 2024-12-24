@@ -1,4 +1,4 @@
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import NextAuth from "next-auth";
 import GitHub from "next-auth/providers/github";
 import Google from "next-auth/providers/google";
@@ -19,51 +19,41 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        try {
-          const { email, password } = credentials;
+        const { email, password } = credentials;
 
-          if (!email || !password) {
-            throw new Error("Email and password are required");
-          }
-
-          // Find user in the database
-          const user = await prisma.user.findUnique({
-            where: { email: credentials.email as string },
-          });
-
-          if (!user) {
-            throw new Error("Invalid email or password");
-          }
-
-          if (user.password === null)
-            throw new Error(
-              "This mail is registered through OAuth, try log in with google/github"
-            );
-
-          // Compare password with hashed password
-          const isPasswordValid = await bcrypt.compare(
-            credentials.password as string,
-            user.password
-          );
-
-          if (!isPasswordValid) {
-            throw new Error("Invalid email or password");
-          }
-
-          // Return user object if valid
-          return {
-            id: user.id,
-            name: user.name,
-            email: user.email,
-            role: user.role, // Include role for role-based access
-          };
-        } catch (error: any) {
-          console.error(
-            "Error in CredentialsProvider authorize:",
-            error.message
-          );
-          throw new Error(error.message || "Authentication failed");
+        if (!email || !password) {
+          throw new Error("Email and password are required");
         }
+
+        // Find user in the database
+        const user = await findUserByEmail(email as string);
+
+        if (!user) {
+          throw new Error("Invalid email or password");
+        }
+
+        if (user.password === null)
+          throw new Error(
+            "This mail is registered through OAuth, try log in with google/github"
+          );
+
+        // Compare password with hashed password
+        const isPasswordValid = await bcrypt.compare(
+          credentials.password as string,
+          user.password
+        );
+
+        if (!isPasswordValid) {
+          throw new Error("Invalid email or password");
+        }
+
+        // Return user object if valid
+        return {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          role: user.role, // Include role for role-based access
+        };
       },
     }),
   ],

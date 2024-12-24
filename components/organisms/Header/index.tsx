@@ -34,7 +34,7 @@ const Header = async () => {
               >
                 <Link href="/test-creation">Create Test</Link>
               </Button>
-              <AuthButtons isLoggedIn />
+              <AuthButtons isLoggedIn={true} />
             </>
           ) : (
             <AuthButtons />

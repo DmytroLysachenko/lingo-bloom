@@ -84,6 +84,7 @@ model GrammarRule {
   data        Json     // Includes title, description, and example in multiple languages
   languageId  Int
   language    Language @relation(fields: [languageId], references: [id])
+  tasks Task[]
 }
 
 
@@ -119,7 +120,9 @@ model Task {
   taskTopic       TaskTopic?     @relation(fields: [taskTopicId], references: [id])
   languageLevelId Int
   languageLevel   LanguageLevel  @relation(fields: [languageLevelId], references: [id])
-  data            Json // Store type-specific details as JSON
+  grammarRuleId   Int?
+  grammarRule     GrammarRule?   @relation(fields: [grammarRuleId], references: [id])
+  data            Json           // Store type-specific details as JSON
   TaskProgress    TaskProgress[]
 }
 

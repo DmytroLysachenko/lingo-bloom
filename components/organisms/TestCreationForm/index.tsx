@@ -11,7 +11,6 @@ import {
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import axios from "axios";
-import { Task } from "@/types";
 
 interface FormData {
   difficulty: string;
@@ -27,7 +26,7 @@ const TestCreationForm = () => {
   } = useForm<FormData>();
 
   const onSubmit = async (data: FormData) => {
-    const response = await axios.post("/api/test", data);
+    await axios.post("/api/test", data);
   };
   // Here you would typically send this data to your backend or state management
 

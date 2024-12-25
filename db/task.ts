@@ -2,13 +2,12 @@
 import { prisma } from "./prisma";
 
 interface ITask {
-  title: string;
-  description?: string;
   languageId: number;
   languageLevelId: number;
   taskTypeId: number;
   taskTopicId: number;
   taskPurposeId: number;
+  grammarRuleId: number;
   data: string;
 }
 

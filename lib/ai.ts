@@ -1,9 +1,8 @@
 import OpenAI from "openai";
 import { generateGrammarRulePrompt, generateTestTaskPrompt } from "./prompts";
-import { LANGUAGE_LEVELS, LANGUAGES } from "@/constants";
 
 interface GenerateTaskParams {
-  languageCode: string;
+  language: string;
   languageLevel: string;
   taskPurpose: string;
   grammarRuleTitle?: string;
@@ -34,24 +33,37 @@ export const generateGrammarRule = async (
   return response;
 };
 
-// generateTestTask('pl', 'A1', 'Something', 'Travel', 'Grammar')
+// generateTestTask({'pl', 'A1', 'Grammar', 'Something',  'Travel'} )
 
 export const generateTestTask = async ({
-  languageCode,
+  language,
   languageLevel,
   taskPurpose,
   grammarRuleTitle,
   taskTopic,
 }: GenerateTaskParams) => {
-  const { langId, langName } = LANGUAGES[languageCode.toLowerCase()];
-
-  const languageLevelId = LANGUAGE_LEVELS[languageLevel];
-
-  const prompt = generateTestTaskPrompt(
-    langName,
+  const prompt = generateTestTaskPrompt({
+    language,
     languageLevel,
     taskPurpose,
+    taskTopic,
     grammarRuleTitle,
-    taskTopic
-  );
+  });
+
+  const response = await openai.chat.completions.create({
+    model: "gpt-4o-mini",
+    messages: [
+      {
+        role: "developer",
+        content:
+          "You are AI for generation data, so all replies should be in json format only. ",
+      },
+      {
+        role: "user",
+        content: prompt,
+      },
+    ],
+  });
+
+  return response;
 };

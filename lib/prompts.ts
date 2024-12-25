@@ -23,32 +23,40 @@ export const generateGrammarRulePrompt = (
   Ensure the title is unique and does not repeat from the following list: ${JSON.stringify(
     existingTitles
   )}.
+
+  This rule should be extensive enough for non-native speakers to understand how it works.
+
   Generate only the JSON object.
   `;
 
-export const generateTestTaskPrompt = (
-  language: string,
-  level: string,
-  taskPurpose: string,
-  grammarRuleTitle: string | null,
-  taskTopic: string | null
-) => `
+export const generateTestTaskPrompt = ({
+  language,
+  languageLevel,
+  taskPurpose,
+  grammarRuleTitle,
+  taskTopic,
+}: {
+  language: string;
+  languageLevel: string;
+  taskPurpose: string;
+  taskTopic?: string;
+  grammarRuleTitle?: string;
+}) => `
   Generate a test task for the ${language} language with the following details:
 
-  - Language Level: ${level}
+  - Language Level: ${languageLevel}
   - Purpose: ${taskPurpose}
   ${taskTopic ? `- Topic: ${taskTopic}` : ""}
   ${grammarRuleTitle ? `- On Grammar rule: ${grammarRuleTitle}` : ""}
 
   Follow this JSON schema for the task:
-  {
-    title: "Task title in ${language}",
-    description: "Detailed description of the task in ${language}",
-
-    data: {
-      level: "${level}",
-      language: "${language}",
-      taskDescription: {
+    {
+        title: {
+        en: "Task title in English",
+        uk: "Task title in Ukrainian",
+        pl: "Task title in Polish"
+      },
+      description: {
         en: "Task description in English",
         uk: "Task description in Ukrainian",
         pl: "Task description in Polish"
@@ -57,7 +65,6 @@ export const generateTestTaskPrompt = (
       answers: ["Option 1", "Option 2", "Option 3", "Option 4"],
       correctAnswer: "Correct answer from the options"
     }
-  }
-    
+  
   Generate only the JSON object, strictly adhering to the schema.
 `;

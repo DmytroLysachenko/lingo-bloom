@@ -12,7 +12,6 @@ interface AuthButtonsProps {
 
 const AuthButtons = ({ isLoggedIn }: AuthButtonsProps) => {
   const pathname = usePathname();
-  console.log(isLoggedIn, "Hui");
 
   return isLoggedIn ? (
     <Button

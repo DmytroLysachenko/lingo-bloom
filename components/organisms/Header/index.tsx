@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Flower } from "lucide-react";
+import { Flower, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 import LanguageSelector from "@molecules/LanguageSelector";
@@ -34,6 +34,18 @@ const Header = async () => {
               >
                 <Link href="/test-creation">Create Test</Link>
               </Button>
+              {session.user.role === "admin" && (
+                <Button
+                  asChild
+                  variant="ghost"
+                  className="w-full sm:w-auto text-primary-700 hover:text-primary-800 hover:bg-primary-100"
+                >
+                  <Link href="/admin">
+                    <Settings className="mr-2 h-4 w-4" />
+                    Admin
+                  </Link>
+                </Button>
+              )}
               <AuthButtons isLoggedIn={true} />
             </>
           ) : (

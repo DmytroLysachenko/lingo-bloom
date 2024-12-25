@@ -66,5 +66,5 @@ export const generateTestTaskPrompt = ({
       correctAnswer: "Correct answer from the options"
     }
   
-  Generate only the JSON object, strictly adhering to the schema.
+  Generate only the JSON object, strictly adhering to the schema. Reply should start from '{' and finish with '}'.
 `;

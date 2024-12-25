@@ -3,8 +3,8 @@ import { Inter, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import Header from "@organisms/Header";
 import Footer from "@components/organisms/Footer";
-import AdminPanel from "@components/organisms/AdminPanel";
-import { auth } from "@/auth";
+// import AdminPanel from "@components/organisms/AdminPanel";
+// import { auth } from "@/auth";
 import { Toaster } from "@components/ui/toaster";
 
 // Import Inter and Playfair Display fonts
@@ -30,7 +30,7 @@ const RootLayout = async ({
 }: Readonly<{
   children: React.ReactNode;
 }>) => {
-  const session = await auth();
+  // const session = await auth();
 
   return (
     <html lang="en">
@@ -38,7 +38,7 @@ const RootLayout = async ({
         className={`${inter.variable} ${playfairDisplay.variable} font-sans`}
       >
         <Header />
-        {session?.user.role === "admin" && <AdminPanel />}
+        {/* {session?.user.role === "admin" && <AdminPanel />} */}
         <main>{children}</main>
         <Toaster />
         <Footer />

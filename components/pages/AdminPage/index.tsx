@@ -5,24 +5,33 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import TaskForm from "@components/organisms/TaskForm";
 import GrammarRuleForm from "@components/organisms/GrammarRuleForm";
 import ConstantsTable from "@components/molecules/ConstantsTable";
-import { GrammarRuleData } from "@/types";
+import {
+  GrammarRule,
+  Language,
+  LanguageLevel,
+  TaskPurpose,
+  TaskTopic,
+  TaskType,
+} from "@/types";
 
 interface AdminPageProps {
-  grammarRules: {
-    data: GrammarRuleData;
-    id: number;
-    languageId: number;
-  }[];
-  taskTopics: { id: number; name: string }[];
+  grammarRules: GrammarRule[];
+  taskTopics: TaskTopic[];
+  languageLevels: LanguageLevel[];
+  languages: Language[];
+  taskPurposes: TaskPurpose[];
+  taskTypes: TaskType[];
 }
 
-const AdminPage = ({ grammarRules, taskTopics }: AdminPageProps) => {
+const AdminPage = ({
+  grammarRules,
+  taskTopics,
+  languageLevels,
+  languages,
+  taskPurposes,
+  taskTypes,
+}: AdminPageProps) => {
   const [activeTab, setActiveTab] = useState("task");
-  const [grammarRule, setGrammarRule] = useState(grammarRules[0]);
-  const [taskTopic, setTaskTopic] = useState(taskTopics[0]);
-
-  console.log([grammarRule, setGrammarRule]);
-  console.log([taskTopic, setTaskTopic]);
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -40,10 +49,17 @@ const AdminPage = ({ grammarRules, taskTopics }: AdminPageProps) => {
           <TabsTrigger value="tests">View Tests</TabsTrigger>
         </TabsList>
         <TabsContent value="task">
-          <TaskForm />
+          <TaskForm
+            grammarRules={grammarRules}
+            taskTopics={taskTopics}
+            languageLevels={languageLevels}
+            languages={languages}
+            taskPurposes={taskPurposes}
+            taskTypes={taskTypes}
+          />
         </TabsContent>
         <TabsContent value="grammarRule">
-          <GrammarRuleForm />
+          <GrammarRuleForm languages={languages} />
         </TabsContent>
         <TabsContent value="constants">
           <ConstantsTable />

@@ -5,58 +5,56 @@ export const generateGrammarRulePrompt = (
   Generate a grammar rule JSON object for the ${language} language. Follow this schema:
   {
       en: {
-        title: "Title in English",
-        description: "Comprehensive and Detailed explanation in English",
-        example: "Example in ${language} language with English comment if needed"
+        title: "Detailed grammar rule name in English",
+        description: "Comprehensive and Detailed rule explanation in English",
+        example: "Examples in ${language} language with English comments if needed"
       },
       pl: {
-        title: "Title in Polish",
+        title: "Detailed grammar rule name in Polish",
         description: "Comprehensive and Detailed explanation in Polish",
-        example: "Example in ${language} language with Polish comment if needed"
+        example: "Example in ${language} language with Polish comments if needed"
       },
       uk: {
-        title: "Title in Ukrainian",
+        title: "Detailed grammar rule name in Ukrainian",
         description: "Comprehensive and Detailed explanation in Ukrainian",
-        example: "Example in ${language} language with Ukrainian comment if needed"
+        example: "Example in ${language} language with Ukrainian comments if needed"
       }
   }
-  Ensure the title is unique and does not repeat from the following list: ${JSON.stringify(
+
+  Ensure the rule does not repeat any from the following list: ${JSON.stringify(
     existingTitles
   )}.
 
-  This rule should be extensive enough for non-native speakers to understand how it works.
-
-  Generate only the JSON object.
+  This rule should be extensive enough for non-native speakers to understand how to use it in daily communication.
   `;
 
 export const generateTestTaskPrompt = ({
   language,
   languageLevel,
   taskPurpose,
-  grammarRuleTitle,
+  taskType,
   taskTopic,
-  quantity = 2,
+  grammarRuleTitle,
 }: {
   language: string;
   languageLevel: string;
   taskPurpose: string;
+  taskType: string;
   taskTopic?: string;
   grammarRuleTitle?: string;
-  quantity?: number;
 }) => `
-  Generate ${quantity} test tasks for the ${language} language with the following details:
+  Generate ${taskType} task for the ${language} language with the following details:
 
-  - Language Level: ${languageLevel}
+  - Approximate task's Language Level: ${languageLevel}
   - Purpose: ${taskPurpose}
-  ${taskTopic ? `- Topic: ${taskTopic}` : ""}
   ${grammarRuleTitle ? `- On Grammar rule: ${grammarRuleTitle}` : ""}
+  ${taskTopic ? `- Topic: ${taskTopic}` : ""}
 
-  Follow this JSON schema for the task:
+
+  Follow this schema:
     {
-      question: "The task's question in ${language}",
-      answers: ["Option 1", "Option 2", "Option 3", "Option 4"],
-      correctAnswer: "Correct answer from the options"
+      question: "The task's question in ${language} language",
+      answers: ["Answer 1", "Answer 2", "Answer 3", "Answer 4"],
+      correctAnswer: "Answer 2"
     }
-  
-  Generate only the JSON object, strictly adhering to the schema.
 `;

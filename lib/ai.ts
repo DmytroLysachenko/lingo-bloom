@@ -5,48 +5,65 @@ interface GenerateTaskParams {
   language: string;
   languageLevel: string;
   taskPurpose: string;
-  grammarRuleTitle?: string;
+  taskType: string;
   taskTopic?: string;
+  grammarRuleTitle?: string;
 }
 
-const openai = new OpenAI();
+const openai = new OpenAI({
+  organization: process.env.OPENAI_ORGANIZATION_ID,
+  project: process.env.OPENAI_PROJECT_ID,
+});
 
 export const generateGrammarRule = async (
   language: string,
   existingRulesTitles: string[]
 ) => {
+  const prompt = generateGrammarRulePrompt(language, existingRulesTitles);
+
   const response = await openai.chat.completions.create({
     model: "gpt-4o-mini",
     messages: [
       {
         role: "developer",
         content:
-          "You are AI for generation data, so all replies should be in json format only. ",
+          "You are assistant for generation JSON data. You always return valid JSON object without additional description or context. ",
       },
       {
         role: "user",
-        content: generateGrammarRulePrompt(language, existingRulesTitles),
+        content: prompt,
       },
     ],
   });
 
-  return response;
+  return response.choices[0].message.content;
 };
 
 // generateTestTask({'pl', 'A1', 'Grammar', 'Something',  'Travel'} )
 
-export const generateTestTask = async ({
+export const generateTask = async ({
   language,
   languageLevel,
   taskPurpose,
+  taskType,
   grammarRuleTitle,
   taskTopic,
 }: GenerateTaskParams) => {
+  console.log(
+    "before generating",
+    language,
+    languageLevel,
+    taskPurpose,
+    taskType,
+    grammarRuleTitle,
+    taskTopic
+  );
   const prompt = generateTestTaskPrompt({
     language,
     languageLevel,
     taskPurpose,
     taskTopic,
+    taskType,
     grammarRuleTitle,
   });
 
@@ -56,7 +73,7 @@ export const generateTestTask = async ({
       {
         role: "developer",
         content:
-          "You are AI for generation data, so all replies should be in json format only. ",
+          "You are assistant for generation JSON data. You always return valid JSON object without additional description or context. ",
       },
       {
         role: "user",
@@ -65,5 +82,7 @@ export const generateTestTask = async ({
     ],
   });
 
-  return response;
+  console.log(response.choices[0].message.content);
+
+  return response.choices[0].message.content;
 };

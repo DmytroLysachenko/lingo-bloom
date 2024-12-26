@@ -3,6 +3,7 @@ import { prisma } from "./prisma";
 interface IGrammarRule {
   languageId: number;
   data: string;
+  checked?: boolean;
 }
 
 export const findAllGrammarRules = async () => {
@@ -12,15 +13,6 @@ export const findAllGrammarRules = async () => {
 export const findAllLanguageGrammarRules = async (languageId: number) => {
   return prisma.grammarRule.findMany({
     where: { languageId },
-  });
-};
-
-export const getCurrentlyExistingRules = async (languageId: number) => {
-  const existingRules = await findAllLanguageGrammarRules(languageId);
-
-  return existingRules.map((rule) => {
-    const data = JSON.parse(rule.data as string);
-    return data.en.title;
   });
 };
 

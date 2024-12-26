@@ -45,3 +45,36 @@ interface GrammarRuleTranslation {
 export interface GrammarRuleData {
   [languageCode: string]: GrammarRuleTranslation;
 }
+
+export interface GrammarRule {
+  data: GrammarRuleData;
+  id: number;
+  languageId: number;
+}
+
+export interface TaskTopic {
+  id: number;
+  name: string;
+}
+
+export interface LanguageLevel {
+  id: number;
+  name: string;
+  description: string | null;
+}
+
+export interface Language {
+  id: number;
+  name: string;
+  code: string;
+}
+
+export interface TaskPurpose {
+  id: number;
+  name: string;
+}
+
+export interface TaskType {
+  id: number;
+  name: string;
+}

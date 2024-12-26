@@ -1,16 +1,18 @@
 "use client";
 
-import { useForm, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+  GrammarRule,
+  Language,
+  LanguageLevel,
+  TaskPurpose,
+  TaskTopic,
+  TaskType,
+} from "@/types";
+import FormSelector from "@components/molecules/FormSelector";
+import axios from "axios";
+import { useState } from "react";
 
 interface TaskFormData {
   languageId: string;
@@ -19,83 +21,179 @@ interface TaskFormData {
   taskTopicId: string;
   languageLevelId: string;
   grammarRuleId: string;
-  data: string;
 }
 
-const TaskForm = () => {
+interface TaskFormProps {
+  grammarRules: GrammarRule[];
+  taskTopics: TaskTopic[];
+  languageLevels: LanguageLevel[];
+  languages: Language[];
+  taskPurposes: TaskPurpose[];
+  taskTypes: TaskType[];
+}
+
+const TaskForm = ({
+  grammarRules,
+  taskTopics,
+  languageLevels,
+  languages,
+  taskPurposes,
+  taskTypes,
+}: TaskFormProps) => {
   const {
+    watch,
     control,
     handleSubmit,
     formState: { errors },
   } = useForm<TaskFormData>();
 
-  const onSubmit = (data: TaskFormData) => {
-    console.log(data);
-    // Here you would typically send this data to your API
+  const [generatedTask, setGeneratedTask] = useState<{
+    languageId: number;
+    taskTypeId: number;
+    taskPurposeId: number;
+    taskTopicId: number | null;
+    languageLevelId: number;
+    grammarRuleId: number | null;
+    checked: boolean;
+    id: number;
+    data: string;
+  }>();
+
+  const selectedLanguageId = watch("languageId");
+
+  const selectedPurposeId = watch("taskPurposeId");
+
+  const grammarRulesOptions = grammarRules
+    .filter((rule) => rule.languageId.toString() === selectedLanguageId)
+    .map((rule) => ({
+      value: rule.id.toString(),
+      name: rule.data.en.title,
+    }));
+
+  const taskTopicsOptions = taskTopics.map((topic) => ({
+    value: topic.id.toString(),
+    name: topic.name,
+  }));
+
+  const languageOptions = languages.map((language) => ({
+    value: language.id.toString(),
+    name: language.name,
+  }));
+
+  const languageLevelsOptions = languageLevels.map((level) => ({
+    value: level.id.toString(),
+    name: level.name,
+  }));
+
+  const taskPurposeIdOptions = taskPurposes.map((purpose) => ({
+    value: purpose.id.toString(),
+    name: purpose.name,
+  }));
+
+  const grammarPurposeId = taskPurposes.find(
+    (purpose) => purpose.name === "Grammar"
+  )?.id;
+
+  const taskTypeIdOptions = taskTypes.map((type) => ({
+    value: type.id.toString(),
+    name: type.name,
+  }));
+
+  const onSubmit = async (data: TaskFormData) => {
+    const response = await axios.post("/api/admin/task", data);
+    console.log(response.data.newTask);
+    setGeneratedTask(response.data.newTask);
+  };
+
+  const onAcceptTask = async () => {
+    await axios.patch("/api/admin/task", {
+      ...generatedTask,
+      checked: true,
+    });
+    setGeneratedTask(undefined);
+  };
+  const onDeleteTask = async () => {
+    await axios.delete("/api/admin/task", {
+      data: { id: generatedTask?.id },
+    });
+    setGeneratedTask(undefined);
   };
 
   return (
-    <form
-      onSubmit={handleSubmit(onSubmit)}
-      className="space-y-6"
-    >
-      <div className="space-y-2">
-        <Label htmlFor="languageId">Language</Label>
-        <Controller
-          name="languageId"
+    <div>
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="space-y-6"
+      >
+        <FormSelector
+          id="languageId"
+          label="Language"
           control={control}
-          rules={{ required: "Language is required" }}
-          render={({ field }) => (
-            <Select
-              onValueChange={field.onChange}
-              defaultValue={field.value}
-            >
-              <SelectTrigger id="languageId">
-                <SelectValue placeholder="Select language" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="1">English</SelectItem>
-                <SelectItem value="2">Polish</SelectItem>
-                {/* Add more languages as needed */}
-              </SelectContent>
-            </Select>
-          )}
+          errors={errors}
+          options={languageOptions}
         />
-        {errors.languageId && (
-          <p className="text-destructive text-sm">
-            {errors.languageId.message}
-          </p>
-        )}
-      </div>
 
-      {/* Repeat similar structure for taskTypeId, taskPurposeId, taskTopicId, languageLevelId, grammarRuleId */}
-
-      <div className="space-y-2">
-        <Label htmlFor="data">Task Data (JSON)</Label>
-        <Controller
-          name="data"
+        <FormSelector
+          id="languageLevelId"
+          label="Language Level"
           control={control}
-          rules={{ required: "Task data is required" }}
-          render={({ field }) => (
-            <Input
-              id="data"
-              {...field}
-              placeholder="Enter task data as JSON"
+          errors={errors}
+          options={languageLevelsOptions}
+        />
+
+        <FormSelector
+          id="taskTopicId"
+          label="Task topic"
+          control={control}
+          errors={errors}
+          options={taskTopicsOptions}
+        />
+
+        {selectedLanguageId && (
+          <>
+            <FormSelector
+              id="taskTypeId"
+              label="Task type"
+              control={control}
+              errors={errors}
+              options={taskTypeIdOptions}
+            />
+            <FormSelector
+              id="taskPurposeId"
+              label="Task purpose"
+              control={control}
+              errors={errors}
+              options={taskPurposeIdOptions}
+            />
+          </>
+        )}
+
+        {selectedLanguageId &&
+          selectedPurposeId === grammarPurposeId?.toString() && (
+            <FormSelector
+              id="grammarRuleId"
+              label="Grammar Rule"
+              control={control}
+              errors={errors}
+              options={grammarRulesOptions}
             />
           )}
-        />
-        {errors.data && (
-          <p className="text-destructive text-sm">{errors.data.message}</p>
-        )}
-      </div>
 
-      <Button
-        type="submit"
-        className="w-full"
-      >
-        Create Task
-      </Button>
-    </form>
+        <Button className="w-full">Create Task</Button>
+      </form>
+      {generatedTask ? (
+        <>
+          <h2 className="text-2xl font-semibold my-5">Created Task:</h2>
+          <p className="text-xl block bg-primary-200 border border-solid border-neutral-600 rounded-xl p-4">
+            {generatedTask.data}
+          </p>
+          <div className="flex justify-between p-2">
+            <Button onClick={onAcceptTask}>Accept</Button>
+            <Button onClick={onDeleteTask}>Delete</Button>
+          </div>
+        </>
+      ) : null}
+    </div>
   );
 };
 

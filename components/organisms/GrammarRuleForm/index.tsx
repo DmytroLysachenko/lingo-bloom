@@ -1,137 +1,90 @@
 "use client";
 
-import { useForm, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Language } from "@/types";
+import FormSelector from "@components/molecules/FormSelector";
+import axios from "axios";
+import { useState } from "react";
 
 interface GrammarRuleFormData {
   languageId: string;
-  title: string;
-  description: string;
-  example: string;
 }
 
-const GrammarRuleForm = () => {
+interface GrammarRuleFormProps {
+  languages: Language[];
+}
+
+const GrammarRuleForm = ({ languages }: GrammarRuleFormProps) => {
   const {
     control,
     handleSubmit,
     formState: { errors },
   } = useForm<GrammarRuleFormData>();
 
-  const onSubmit = (data: GrammarRuleFormData) => {
-    console.log(data);
-    // Here you would typically send this data to your API
+  const [generatedRule, setGeneratedRule] = useState<{
+    languageId: number;
+    data: string;
+    id: number;
+  }>();
+
+  const languageOptions = languages.map((language) => ({
+    value: language.id.toString(),
+    name: language.name,
+  }));
+
+  const onSubmit = async (data: GrammarRuleFormData) => {
+    const response = await axios.post("/api/admin/grammar-rule", { ...data });
+    setGeneratedRule(response.data.newRule);
   };
 
+  const onAcceptRule = async () => {
+    await axios.patch("/api/admin/grammar-rule", {
+      ...generatedRule,
+      checked: true,
+    });
+    setGeneratedRule(undefined);
+  };
+  const onDeleteRule = async () => {
+    await axios.delete("/api/admin/grammar-rule", {
+      data: { id: generatedRule?.id },
+    });
+    setGeneratedRule(undefined);
+  };
   return (
-    <form
-      onSubmit={handleSubmit(onSubmit)}
-      className="space-y-6"
-    >
-      <div className="space-y-2">
-        <Label htmlFor="languageId">Language</Label>
-        <Controller
-          name="languageId"
-          control={control}
-          rules={{ required: "Language is required" }}
-          render={({ field }) => (
-            <Select
-              onValueChange={field.onChange}
-              defaultValue={field.value}
-            >
-              <SelectTrigger id="languageId">
-                <SelectValue placeholder="Select language" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="1">English</SelectItem>
-                <SelectItem value="2">Polish</SelectItem>
-                {/* Add more languages as needed */}
-              </SelectContent>
-            </Select>
-          )}
-        />
-        {errors.languageId && (
-          <p className="text-destructive text-sm">
-            {errors.languageId.message}
-          </p>
-        )}
-      </div>
-
-      <div className="space-y-2">
-        <Label htmlFor="title">Title</Label>
-        <Controller
-          name="title"
-          control={control}
-          rules={{ required: "Title is required" }}
-          render={({ field }) => (
-            <Input
-              id="title"
-              {...field}
-              placeholder="Enter grammar rule title"
-            />
-          )}
-        />
-        {errors.title && (
-          <p className="text-destructive text-sm">{errors.title.message}</p>
-        )}
-      </div>
-
-      <div className="space-y-2">
-        <Label htmlFor="description">Description</Label>
-        <Controller
-          name="description"
-          control={control}
-          rules={{ required: "Description is required" }}
-          render={({ field }) => (
-            <Textarea
-              id="description"
-              {...field}
-              placeholder="Enter grammar rule description"
-            />
-          )}
-        />
-        {errors.description && (
-          <p className="text-destructive text-sm">
-            {errors.description.message}
-          </p>
-        )}
-      </div>
-
-      <div className="space-y-2">
-        <Label htmlFor="example">Example</Label>
-        <Controller
-          name="example"
-          control={control}
-          rules={{ required: "Example is required" }}
-          render={({ field }) => (
-            <Textarea
-              id="example"
-              {...field}
-              placeholder="Enter grammar rule example"
-            />
-          )}
-        />
-        {errors.example && (
-          <p className="text-destructive text-sm">{errors.example.message}</p>
-        )}
-      </div>
-
-      <Button
-        type="submit"
-        className="w-full"
+    <>
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="space-y-6"
       >
-        Create Grammar Rule
-      </Button>
-    </form>
+        <FormSelector
+          id="languageId"
+          label="Language"
+          control={control}
+          errors={errors}
+          options={languageOptions}
+        />
+
+        <Button
+          type="submit"
+          className="w-full"
+        >
+          Create Grammar Rule
+        </Button>
+      </form>
+      {generatedRule ? (
+        <>
+          <h2 className="text-2xl font-semibold my-5">Created Rule:</h2>
+          <p className="text-xl block bg-primary-200 border border-solid border-neutral-600 rounded-xl p-4">
+            {generatedRule.data}
+          </p>
+          <div className="flex justify-between p-2">
+            <Button onClick={onAcceptRule}>Accept</Button>
+            <Button onClick={onDeleteRule}>Delete</Button>
+          </div>
+        </>
+      ) : null}
+    </>
   );
 };
 

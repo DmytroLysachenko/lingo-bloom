@@ -1,26 +1,47 @@
-import { LANGUAGES } from "@/constants";
-import { createGrammarRule, getCurrentlyExistingRules } from "@/db/grammarRule";
+import {
+  createGrammarRule,
+  deleteGrammarRule,
+  findAllLanguageGrammarRules,
+  updateGrammarRule,
+} from "@/db/grammarRule";
+import { findLanguageById } from "@/db/language";
 import { generateGrammarRule } from "@/lib/ai";
-import { NextResponse } from "next/server";
+import { parseJsonData } from "@/lib/utils";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   const body = await request.json();
 
-  const { languageCode } = body;
+  const languageId = Number(body.languageId);
 
-  const language = LANGUAGES[languageCode];
+  const [language, existingRules] = await Promise.all([
+    findLanguageById(languageId),
+    findAllLanguageGrammarRules(languageId),
+  ]);
 
-  const { id, name } = language;
+  if (!language)
+    return NextResponse.json(
+      { message: `There is no language with such id: ${languageId}` },
+      { status: 400 }
+    );
 
-  const existingRules = await getCurrentlyExistingRules(id);
+  const existingRulesTitles = existingRules.map(
+    (rule) => parseJsonData(rule).data.en.title
+  );
 
-  const response = await generateGrammarRule(name, existingRules);
+  const data = await generateGrammarRule(language.name, existingRulesTitles);
 
-  console.log(response.choices[0].message.content);
+  if (!data)
+    return NextResponse.json(
+      {
+        message: `Something went wrong during rule generation, try again later.`,
+      },
+      { status: 500 }
+    );
 
   const newRule = await createGrammarRule({
-    languageId: id,
-    data: response.choices[0].message.content as string,
+    languageId,
+    data,
   });
 
   return NextResponse.json(
@@ -29,4 +50,21 @@ export async function POST(request: Request) {
   );
 }
 
-export async function GET() {}
+export async function PATCH(request: NextRequest) {
+  const data = await request.json();
+
+  const updatedTask = await updateGrammarRule(data.id, { ...data });
+
+  return NextResponse.json(
+    { message: "Successfully approved new grammar rule.", updatedTask },
+    { status: 200 }
+  );
+}
+
+export async function DELETE(request: NextRequest) {
+  const data = await request.json();
+
+  await deleteGrammarRule(data.id);
+
+  return NextResponse.json({ status: 204 });
+}

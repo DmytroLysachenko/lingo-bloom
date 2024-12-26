@@ -2,7 +2,7 @@
 import { prisma } from "./prisma";
 
 interface ILanguageLevel {
-  level: string;
+  name: string;
   description?: string;
 }
 

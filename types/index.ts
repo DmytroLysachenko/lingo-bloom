@@ -35,3 +35,13 @@ export interface TaskStats {
   averageScore: number;
   triesPerTask: number;
 }
+
+interface GrammarRuleTranslation {
+  title: string;
+  description: string;
+  example: string;
+}
+
+export interface GrammarRuleData {
+  [languageCode: string]: GrammarRuleTranslation;
+}

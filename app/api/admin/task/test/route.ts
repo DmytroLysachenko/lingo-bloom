@@ -4,13 +4,13 @@ import {
   TASK_PURPOSES,
   TASK_TYPES,
 } from "@/constants";
-import { findAllGrammarRules } from "@/db/grammarRule";
+import { findAllLanguageGrammarRules } from "@/db/grammarRule";
 import { createTask } from "@/db/task";
 import { findAllTaskTopics } from "@/db/taskTopic";
 import { generateTestTask } from "@/lib/ai";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   const body = await request.json();
 
   const { languageCode, languageLevel, taskPurpose } = body;
@@ -23,7 +23,7 @@ export async function POST(request: Request) {
     case "Grammar":
       const [taskTopics, grammarRules] = await Promise.all([
         findAllTaskTopics(),
-        findAllGrammarRules(langId),
+        findAllLanguageGrammarRules(langId),
       ]);
 
       for (const rule of grammarRules) {

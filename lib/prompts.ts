@@ -35,14 +35,16 @@ export const generateTestTaskPrompt = ({
   taskPurpose,
   grammarRuleTitle,
   taskTopic,
+  quantity = 2,
 }: {
   language: string;
   languageLevel: string;
   taskPurpose: string;
   taskTopic?: string;
   grammarRuleTitle?: string;
+  quantity?: number;
 }) => `
-  Generate a test task for the ${language} language with the following details:
+  Generate ${quantity} test tasks for the ${language} language with the following details:
 
   - Language Level: ${languageLevel}
   - Purpose: ${taskPurpose}
@@ -51,20 +53,10 @@ export const generateTestTaskPrompt = ({
 
   Follow this JSON schema for the task:
     {
-        title: {
-        en: "Task title in English",
-        uk: "Task title in Ukrainian",
-        pl: "Task title in Polish"
-      },
-      description: {
-        en: "Task description in English",
-        uk: "Task description in Ukrainian",
-        pl: "Task description in Polish"
-      },
       question: "The task's question in ${language}",
       answers: ["Option 1", "Option 2", "Option 3", "Option 4"],
       correctAnswer: "Correct answer from the options"
     }
   
-  Generate only the JSON object, strictly adhering to the schema. Reply should start from '{' and finish with '}'.
+  Generate only the JSON object, strictly adhering to the schema.
 `;

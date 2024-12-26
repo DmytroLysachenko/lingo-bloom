@@ -5,14 +5,18 @@ interface IGrammarRule {
   data: string;
 }
 
-export const findAllGrammarRules = async (languageId: number) => {
+export const findAllGrammarRules = async () => {
+  return prisma.grammarRule.findMany();
+};
+
+export const findAllLanguageGrammarRules = async (languageId: number) => {
   return prisma.grammarRule.findMany({
     where: { languageId },
   });
 };
 
 export const getCurrentlyExistingRules = async (languageId: number) => {
-  const existingRules = await findAllGrammarRules(languageId);
+  const existingRules = await findAllLanguageGrammarRules(languageId);
 
   return existingRules.map((rule) => {
     const data = JSON.parse(rule.data as string);

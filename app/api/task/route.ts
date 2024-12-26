@@ -1,9 +1,12 @@
-import { NextApiRequest, NextApiResponse } from "next";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function POST(request: NextApiRequest, response: NextApiResponse) {
-  return response.json({ message: "All okay" });
+export async function POST(request: NextRequest) {
+  console.log(request);
+
+  return NextResponse.json({ message: "All ok" });
 }
 
-export async function GET(request: NextApiRequest, response: NextApiResponse) {
-  return response.json({ message: "All okay" });
+export async function GET(request: NextRequest) {
+  console.log(request);
+  return NextResponse.json({ message: "All ok" });
 }

@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 
@@ -45,11 +45,21 @@ const RegisterForm = () => {
       reset();
       router.push("/login");
     } catch (error) {
-      toast({
-        title: "Error",
-        description: error.response.data.message,
-        variant: "destructive",
-      });
+      if (error instanceof AxiosError) {
+        if (error.response) {
+          toast({
+            title: "Error",
+            description: error.response.data.message,
+            variant: "destructive",
+          });
+        } else {
+          toast({
+            title: "Error",
+            description: "An unknown error occurred",
+            variant: "destructive",
+          });
+        }
+      }
     }
   };
 

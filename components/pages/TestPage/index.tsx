@@ -1,4 +1,4 @@
-import TestInterface from "@components/organisms/TestInteface";
+// import TestInterface from "@components/organisms/TestInteface";
 import React from "react";
 
 interface TestPageProps {
@@ -6,9 +6,11 @@ interface TestPageProps {
 }
 
 const TestPage = ({ testId }: TestPageProps) => {
+  console.log(testId);
+
   return (
     <div className="min-h-[80vh] flex items-center justify-center">
-      <TestInterface tasks={tasks} />
+      {/* <TestInterface tasks={tasks} /> */}
     </div>
   );
 };

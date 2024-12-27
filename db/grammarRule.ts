@@ -1,8 +1,15 @@
 import { prisma } from "./prisma";
 
-interface IGrammarRule {
+interface ICreateGrammarRule {
   languageId: number;
   data: string;
+  checked?: boolean;
+}
+
+interface IUpdateGrammarRule {
+  id: number;
+  languageId?: number;
+  data?: string;
   checked?: boolean;
 }
 
@@ -22,13 +29,16 @@ export const findGrammarRuleById = async (id: number) => {
   });
 };
 
-export const createGrammarRule = async (data: IGrammarRule) => {
+export const createGrammarRule = async (data: ICreateGrammarRule) => {
   return prisma.grammarRule.create({
     data,
   });
 };
 
-export const updateGrammarRule = async (id: number, data: IGrammarRule) => {
+export const updateGrammarRule = async (
+  id: number,
+  data: IUpdateGrammarRule
+) => {
   return prisma.grammarRule.update({
     where: { id },
     data,

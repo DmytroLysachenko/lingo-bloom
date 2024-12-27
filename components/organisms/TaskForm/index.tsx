@@ -48,14 +48,14 @@ const TaskForm = ({
   } = useForm<TaskFormData>();
 
   const [generatedTask, setGeneratedTask] = useState<{
+    id: number;
+    checked: boolean;
     languageId: number;
+    languageLevelId: number;
     taskTypeId: number;
     taskPurposeId: number;
     taskTopicId: number | null;
-    languageLevelId: number;
     grammarRuleId: number | null;
-    checked: boolean;
-    id: number;
     data: string;
   }>();
 
@@ -100,8 +100,19 @@ const TaskForm = ({
   }));
 
   const onSubmit = async (data: TaskFormData) => {
-    const response = await axios.post("/api/admin/task", data);
-    console.log(response.data.newTask);
+    const numericData = Object.fromEntries(
+      [
+        "languageId",
+        "taskTypeId",
+        "taskPurposeId",
+        "taskTopicId",
+        "languageLevelId",
+        "grammarRuleId",
+      ].map((key) => [key, Number(data[key as keyof TaskFormData])])
+    );
+
+    const response = await axios.post("/api/admin/task", numericData);
+
     setGeneratedTask(response.data.newTask);
   };
 
@@ -112,6 +123,7 @@ const TaskForm = ({
     });
     setGeneratedTask(undefined);
   };
+
   const onDeleteTask = async () => {
     await axios.delete("/api/admin/task", {
       data: { id: generatedTask?.id },

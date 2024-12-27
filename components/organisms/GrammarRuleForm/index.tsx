@@ -34,7 +34,11 @@ const GrammarRuleForm = ({ languages }: GrammarRuleFormProps) => {
   }));
 
   const onSubmit = async (data: GrammarRuleFormData) => {
-    const response = await axios.post("/api/admin/grammar-rule", { ...data });
+    const languageId = Number(data.languageId);
+
+    const response = await axios.post("/api/admin/grammar-rule", {
+      languageId,
+    });
     setGeneratedRule(response.data.newRule);
   };
 
@@ -45,12 +49,14 @@ const GrammarRuleForm = ({ languages }: GrammarRuleFormProps) => {
     });
     setGeneratedRule(undefined);
   };
+
   const onDeleteRule = async () => {
     await axios.delete("/api/admin/grammar-rule", {
       data: { id: generatedRule?.id },
     });
     setGeneratedRule(undefined);
   };
+
   return (
     <>
       <form

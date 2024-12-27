@@ -14,3 +14,13 @@ export function cn(...inputs: ClassValue[]) {
 export const parseJsonData = (object: ObjectWithJsonData) => {
   return { ...object, data: { ...JSON.parse(object.data as string) } };
 };
+
+export class ApiError extends Error {
+  status: number;
+
+  constructor(message: string, status: number = 400) {
+    super(message);
+    this.status = status;
+    Object.setPrototypeOf(this, ApiError.prototype);
+  }
+}

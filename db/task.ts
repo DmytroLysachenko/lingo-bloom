@@ -1,16 +1,26 @@
 // src/db/task.ts
 import { prisma } from "./prisma";
 
-interface ITask {
+interface ICreateTask {
   languageId: number;
   languageLevelId: number;
-  taskTypeId: number;
-  taskTopicId: number;
   taskPurposeId: number;
-  grammarRuleId: number;
+  taskTypeId: number;
+  taskTopicId?: number;
+  grammarRuleId?: number;
   data: string;
 }
 
+interface IUpdateTask {
+  id: number;
+  languageId?: number;
+  languageLevelId?: number;
+  taskTypeId?: number;
+  taskTopicId?: number;
+  taskPurposeId?: number;
+  grammarRuleId?: number;
+  data?: string;
+}
 export const findAllTasks = async () => {
   return prisma.task.findMany();
 };
@@ -21,13 +31,13 @@ export const findTaskById = async (id: number) => {
   });
 };
 
-export const createTask = async (data: ITask) => {
+export const createTask = async (data: ICreateTask) => {
   return prisma.task.create({
     data,
   });
 };
 
-export const updateTask = async (id: number, data: ITask) => {
+export const updateTask = async (id: number, data: IUpdateTask) => {
   return prisma.task.update({
     where: { id },
     data,

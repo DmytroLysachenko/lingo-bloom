@@ -1,70 +1,112 @@
 import { findGrammarRuleById } from "@/db/grammarRule";
 import { findLanguageById } from "@/db/language";
 import { findLanguageLevelById } from "@/db/languageLevel";
-import { createTask, deleteTask, updateTask } from "@/db/task";
+import { createTask, deleteTask, findTaskById, updateTask } from "@/db/task";
 import { findTaskPurposeById } from "@/db/taskPurpose";
 import { findTaskTopicById } from "@/db/taskTopic";
 import { findTaskTypeById } from "@/db/taskType";
 import { generateTask } from "@/lib/ai";
+import { ApiError } from "@/lib/utils";
+import {
+  createTaskSchema,
+  deleteTaskSchema,
+  taskDataScheme,
+  updateTaskSchema,
+} from "@/schemas";
+import { apiMiddleware } from "@components/providers/apiMiddleware";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function POST(request: NextRequest) {
+export const POST = apiMiddleware(async (request: NextRequest) => {
   const body = await request.json();
 
-  const languageId = Number(body.languageId);
-  const languageLevelId = Number(body.languageLevelId);
-  const taskTopicId = Number(body.taskTopicId);
-  const taskTypeId = Number(body.taskTypeId);
-  const taskPurposeId = Number(body.taskPurposeId);
-  const grammarRuleId = Number(body.grammarRuleId);
+  const parsedBody = createTaskSchema.parse(body);
+
+  const {
+    languageId,
+    languageLevelId,
+    taskTopicId,
+    taskTypeId,
+    taskPurposeId,
+    grammarRuleId,
+  } = parsedBody;
 
   const [language, languageLevel, taskType, taskPurpose] = await Promise.all([
-    findLanguageById(languageId),
-    findLanguageLevelById(languageLevelId),
-    findTaskTypeById(taskTypeId),
-    findTaskPurposeById(taskPurposeId),
+    findLanguageById(languageId).catch(() => {
+      throw new ApiError("Database error while fetching language data.", 500);
+    }),
+    findLanguageLevelById(languageLevelId).catch(() => {
+      throw new ApiError(
+        "Database error while fetching language level data.",
+        500
+      );
+    }),
+    findTaskTypeById(taskTypeId).catch(() => {
+      throw new ApiError("Database error while fetching task type data.", 500);
+    }),
+    findTaskPurposeById(taskPurposeId).catch(() => {
+      throw new ApiError(
+        "Database error while fetching task purpose data.",
+        500
+      );
+    }),
   ]);
 
   if (!language)
-    return NextResponse.json(
-      { message: `There is no language with such id: ${languageId}` },
-      { status: 400 }
-    );
+    throw new ApiError(`There is no language with such id: ${languageId}`, 404);
 
   if (!languageLevel)
-    return NextResponse.json(
-      {
-        message: `There is no language level with such id: ${languageLevelId}`,
-      },
-      { status: 400 }
+    throw new ApiError(
+      `There is no language level with such id: ${languageLevelId}`,
+      404
     );
 
   if (!taskType)
-    return NextResponse.json(
-      { message: `There is no task type with such id: ${taskTypeId}` },
-      { status: 400 }
+    throw new ApiError(
+      `There is no task type with such id: ${taskTypeId}`,
+      404
     );
 
   if (!taskPurpose)
-    return NextResponse.json(
-      { message: `There is no task purpose with such id: ${taskPurposeId}` },
-      { status: 400 }
+    throw new ApiError(
+      `There is no task purpose with such id: ${taskPurposeId}`,
+      404
     );
 
   const grammarRule =
     taskPurpose.name === "Grammar" && grammarRuleId
-      ? await findGrammarRuleById(grammarRuleId)
+      ? await findGrammarRuleById(grammarRuleId).catch(() => {
+          throw new ApiError(
+            "Database error while fetching grammar rule.",
+            500
+          );
+        })
       : undefined;
+
+  if (!grammarRule)
+    throw new ApiError(
+      `There is no grammar rule with such id: ${grammarRuleId}`,
+      404
+    );
 
   const grammarRuleTitle = grammarRule
     ? await JSON.parse(grammarRule.data as string).en.title
     : undefined;
 
   const taskTopic = taskTopicId
-    ? (await findTaskTopicById(taskTopicId))?.name
+    ? (
+        await findTaskTopicById(taskTopicId).catch(() => {
+          throw new ApiError("Database error while fetching task topic.", 500);
+        })
+      )?.name
     : undefined;
 
-  const response = await generateTask({
+  if (!taskTopic)
+    throw new ApiError(
+      `There is no task topic with such id: ${taskTopicId}`,
+      404
+    );
+
+  const data = await generateTask({
     language: language.name,
     languageLevel: languageLevel.name,
     taskPurpose: taskPurpose.name,
@@ -73,6 +115,14 @@ export async function POST(request: NextRequest) {
     grammarRuleTitle,
   });
 
+  if (!data)
+    throw new ApiError(
+      `Something went wrong during rule generation, try again later.`,
+      500
+    );
+
+  taskDataScheme.parse(JSON.parse(data));
+
   const newTask = await createTask({
     languageId,
     languageLevelId,
@@ -80,7 +130,9 @@ export async function POST(request: NextRequest) {
     taskTypeId,
     taskTopicId,
     grammarRuleId,
-    data: response ?? "",
+    data,
+  }).catch(() => {
+    throw new ApiError("Database error while creating task.", 500);
   });
 
   return NextResponse.json(
@@ -90,23 +142,32 @@ export async function POST(request: NextRequest) {
     },
     { status: 200 }
   );
-}
+});
 
-export async function PATCH(request: NextRequest) {
-  const data = await request.json();
+export const PATCH = apiMiddleware(async (request: NextRequest) => {
+  const body = await request.json();
 
-  const updatedTask = await updateTask(data.id, { ...data });
+  const parsedBody = updateTaskSchema.parse(body);
+
+  const task = await findTaskById(parsedBody.id);
+
+  if (!task)
+    throw new ApiError(`There is no task with such id: ${parsedBody.id}`, 404);
+
+  const updatedTask = await updateTask(parsedBody.id, { ...parsedBody });
 
   return NextResponse.json(
-    { message: "Successfully approved new task.", updatedTask },
+    { message: "Successfully updated new task.", updatedTask },
     { status: 200 }
   );
-}
+});
 
-export async function DELETE(request: NextRequest) {
-  const data = await request.json();
+export const DELETE = apiMiddleware(async (request: NextRequest) => {
+  const body = await request.json();
 
-  await deleteTask(data.id);
+  const parsedBody = deleteTaskSchema.parse(body);
+
+  await deleteTask(parsedBody.id);
 
   return NextResponse.json({ status: 204 });
-}
+});

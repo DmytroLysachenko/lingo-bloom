@@ -1,8 +1,9 @@
 import { prisma } from "@/db/prisma";
+import { apiMiddleware } from "@components/providers/apiMiddleware";
 import bcrypt from "bcryptjs";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function POST(request: NextRequest) {
+export const POST = apiMiddleware(async (request: NextRequest) => {
   const body = await request.json();
   const { email, password, name } = body;
   if (!email || !password || !name) {
@@ -41,4 +42,4 @@ export async function POST(request: NextRequest) {
       { status: 500 }
     );
   }
-}
+});

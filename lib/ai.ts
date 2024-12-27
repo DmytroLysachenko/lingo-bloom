@@ -49,15 +49,6 @@ export const generateTask = async ({
   grammarRuleTitle,
   taskTopic,
 }: GenerateTaskParams) => {
-  console.log(
-    "before generating",
-    language,
-    languageLevel,
-    taskPurpose,
-    taskType,
-    grammarRuleTitle,
-    taskTopic
-  );
   const prompt = generateTestTaskPrompt({
     language,
     languageLevel,
@@ -81,8 +72,6 @@ export const generateTask = async ({
       },
     ],
   });
-
-  console.log(response.choices[0].message.content);
 
   return response.choices[0].message.content;
 };

@@ -1,5 +1,5 @@
 import OpenAI from "openai";
-import { generateGrammarRulePrompt, generateTestTaskPrompt } from "./prompts";
+import { generateGrammarRulePrompt, generateTaskPrompt } from "./prompts";
 
 interface GenerateTaskParams {
   language: string;
@@ -49,7 +49,7 @@ export const generateTask = async ({
   grammarRuleTitle,
   taskTopic,
 }: GenerateTaskParams) => {
-  const prompt = generateTestTaskPrompt({
+  const prompt = generateTaskPrompt({
     language,
     languageLevel,
     taskPurpose,

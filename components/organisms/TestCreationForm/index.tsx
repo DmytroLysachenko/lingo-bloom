@@ -1,29 +1,42 @@
 "use client";
 
-import { useForm, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Label } from "@/components/ui/label";
+
 import axios from "axios";
+import FormSelector from "@components/molecules/FormSelector";
+import { Language, LanguageLevel } from "@/types";
 
 interface FormData {
-  difficulty: string;
+  languageId: string;
+  languageLevelId: string;
   quantity: string;
-  taskType: string;
 }
 
-const TestCreationForm = () => {
+interface TestCreationFormProps {
+  languageLevels: LanguageLevel[];
+  languages: Language[];
+}
+
+const TestCreationForm = ({
+  languageLevels,
+  languages,
+}: TestCreationFormProps) => {
   const {
     control,
     handleSubmit,
     formState: { errors },
   } = useForm<FormData>();
+
+  const languageOptions = languages.map((language) => ({
+    value: language.id.toString(),
+    name: language.name,
+  }));
+
+  const languageLevelsOptions = languageLevels.map((level) => ({
+    value: level.id.toString(),
+    name: level.name,
+  }));
 
   const onSubmit = async (data: FormData) => {
     await axios.post("/api/test", data);
@@ -35,115 +48,36 @@ const TestCreationForm = () => {
       onSubmit={handleSubmit(onSubmit)}
       className="space-y-6 w-full max-w-md mx-auto"
     >
-      <div className="space-y-2">
-        <Label
-          htmlFor="difficulty"
-          className="text-primary-700"
-        >
-          Polish Difficulty Level
-        </Label>
-        <Controller
-          name="difficulty"
-          control={control}
-          rules={{ required: "Difficulty level is required" }}
-          render={({ field }) => (
-            <Select
-              onValueChange={field.onChange}
-              defaultValue={field.value}
-            >
-              <SelectTrigger
-                id="difficulty"
-                className="w-full border-primary-200 focus:border-primary-500 focus:ring-primary-500"
-              >
-                <SelectValue placeholder="Select difficulty" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="A1">A1</SelectItem>
-                <SelectItem value="A2">A2</SelectItem>
-                <SelectItem value="B1">B1</SelectItem>
-                <SelectItem value="B2">B2</SelectItem>
-              </SelectContent>
-            </Select>
-          )}
-        />
-        {errors.difficulty && (
-          <p className="text-destructive text-sm">
-            {errors.difficulty.message}
-          </p>
-        )}
-      </div>
+      <FormSelector
+        id="languageId"
+        label="Language"
+        control={control}
+        errors={errors}
+        options={languageOptions}
+        placeholder="Select a language"
+      />
 
-      <div className="space-y-2">
-        <Label
-          htmlFor="quantity"
-          className="text-primary-700"
-        >
-          Number of Questions
-        </Label>
-        <Controller
-          name="quantity"
-          control={control}
-          rules={{ required: "Number of questions is required" }}
-          render={({ field }) => (
-            <Select
-              onValueChange={field.onChange}
-              defaultValue={field.value}
-            >
-              <SelectTrigger
-                id="quantity"
-                className="w-full border-primary-200 focus:border-primary-500 focus:ring-primary-500"
-              >
-                <SelectValue placeholder="Select quantity" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="5">5</SelectItem>
-                <SelectItem value="10">10</SelectItem>
-                <SelectItem value="15">15</SelectItem>
-              </SelectContent>
-            </Select>
-          )}
-        />
-        {errors.quantity && (
-          <p className="text-destructive text-sm">{errors.quantity.message}</p>
-        )}
-      </div>
+      <FormSelector
+        id="languageLevelId"
+        label="Language Level"
+        control={control}
+        errors={errors}
+        options={languageLevelsOptions}
+        placeholder="Select a language level"
+      />
 
-      <div className="space-y-2">
-        <Label
-          htmlFor="taskType"
-          className="text-primary-700"
-        >
-          Task Targeting
-        </Label>
-        <Controller
-          name="taskType"
-          control={control}
-          rules={{ required: "Task type is required" }}
-          render={({ field }) => (
-            <Select
-              onValueChange={field.onChange}
-              defaultValue={field.value}
-            >
-              <SelectTrigger
-                id="taskType"
-                className="w-full border-primary-200 focus:border-primary-500 focus:ring-primary-500"
-              >
-                <SelectValue placeholder="Select task type" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="vocabulary">Vocabulary</SelectItem>
-                <SelectItem value="grammar">Grammar</SelectItem>
-                <SelectItem value="textUnderstanding">
-                  Text Understanding
-                </SelectItem>
-              </SelectContent>
-            </Select>
-          )}
-        />
-        {errors.taskType && (
-          <p className="text-destructive text-sm">{errors.taskType.message}</p>
-        )}
-      </div>
+      <FormSelector
+        id="quantity"
+        label="Quantity of tasks"
+        control={control}
+        errors={errors}
+        options={[
+          { value: "5", name: "5" },
+          { value: "10", name: "10" },
+          { value: "15", name: "15" },
+        ]}
+        placeholder="Select quantity of tasks"
+      />
 
       <Button className="w-full bg-secondary-500 hover:bg-secondary-600 text-white !mt-12">
         Generate Test

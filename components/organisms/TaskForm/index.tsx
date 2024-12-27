@@ -16,11 +16,11 @@ import { useState } from "react";
 
 interface TaskFormData {
   languageId: string;
+  languageLevelId: string;
   taskTypeId: string;
   taskPurposeId: string;
-  taskTopicId: string;
-  languageLevelId: string;
-  grammarRuleId: string;
+  taskTopicId?: string;
+  grammarRuleId?: string;
 }
 
 interface TaskFormProps {
@@ -54,10 +54,12 @@ const TaskForm = ({
     languageLevelId: number;
     taskTypeId: number;
     taskPurposeId: number;
-    taskTopicId: number | null;
-    grammarRuleId: number | null;
+    taskTopicId?: number;
+    grammarRuleId?: number;
     data: string;
   }>();
+
+  const [isLoading, setIsLoading] = useState(false);
 
   const selectedLanguageId = watch("languageId");
 
@@ -100,42 +102,59 @@ const TaskForm = ({
   }));
 
   const onSubmit = async (data: TaskFormData) => {
-    const numericData = Object.fromEntries(
-      [
-        "languageId",
-        "taskTypeId",
-        "taskPurposeId",
-        "taskTopicId",
-        "languageLevelId",
-        "grammarRuleId",
-      ].map((key) => [key, Number(data[key as keyof TaskFormData])])
-    );
-
-    const response = await axios.post("/api/admin/task", numericData);
-
-    setGeneratedTask(response.data.newTask);
+    const numericData = {
+      languageId: Number(data.languageId),
+      languageLevelId: Number(data.languageLevelId),
+      taskTypeId: Number(data.taskTypeId),
+      taskPurposeId: Number(data.taskPurposeId),
+      taskTopicId: data.taskTopicId ? Number(data.taskTopicId) : undefined,
+      grammarRuleId: data.grammarRuleId
+        ? Number(data.grammarRuleId)
+        : undefined,
+    };
+    try {
+      setIsLoading(true);
+      const response = await axios.post("/api/admin/task", numericData);
+      setGeneratedTask(response.data.newTask);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const onAcceptTask = async () => {
-    await axios.patch("/api/admin/task", {
-      ...generatedTask,
-      checked: true,
-    });
-    setGeneratedTask(undefined);
+    try {
+      await axios.patch("/api/admin/task", {
+        ...generatedTask,
+        checked: true,
+      });
+      setGeneratedTask(undefined);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const onDeleteTask = async () => {
-    await axios.delete("/api/admin/task", {
-      data: { id: generatedTask?.id },
-    });
-    setGeneratedTask(undefined);
+    try {
+      await axios.delete("/api/admin/task", {
+        data: { id: generatedTask?.id },
+      });
+      setGeneratedTask(undefined);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
     <div>
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="space-y-6"
+        className="space-y-6 w-full max-w-md mx-auto"
       >
         <FormSelector
           id="languageId"
@@ -143,6 +162,7 @@ const TaskForm = ({
           control={control}
           errors={errors}
           options={languageOptions}
+          placeholder="Select a language"
         />
 
         <FormSelector
@@ -151,6 +171,7 @@ const TaskForm = ({
           control={control}
           errors={errors}
           options={languageLevelsOptions}
+          placeholder="Select a language level"
         />
 
         <FormSelector
@@ -159,6 +180,7 @@ const TaskForm = ({
           control={control}
           errors={errors}
           options={taskTopicsOptions}
+          placeholder="Select a task topic"
         />
 
         {selectedLanguageId && (
@@ -169,6 +191,7 @@ const TaskForm = ({
               control={control}
               errors={errors}
               options={taskTypeIdOptions}
+              placeholder="Select a task type"
             />
             <FormSelector
               id="taskPurposeId"
@@ -176,6 +199,7 @@ const TaskForm = ({
               control={control}
               errors={errors}
               options={taskPurposeIdOptions}
+              placeholder="Select a task purpose"
             />
           </>
         )}
@@ -188,10 +212,16 @@ const TaskForm = ({
               control={control}
               errors={errors}
               options={grammarRulesOptions}
+              placeholder="Select a grammar rule"
             />
           )}
 
-        <Button className="w-full">Create Task</Button>
+        <Button
+          disabled={isLoading}
+          className="w-full"
+        >
+          Create Task
+        </Button>
       </form>
       {generatedTask ? (
         <>

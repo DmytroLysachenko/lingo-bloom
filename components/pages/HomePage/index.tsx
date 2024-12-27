@@ -25,7 +25,7 @@ const HomePage = async () => {
               size="lg"
               className="text-lg px-8 py-3 bg-accent-500 hover:bg-accent-600 text-white"
             >
-              <Link href={session ? "/tasks" : "/login"}>
+              <Link href={session ? "/test-creation" : "/login"}>
                 Start Learning Now! <ArrowRight className="ml-2 h-5 w-5" />
               </Link>
             </Button>

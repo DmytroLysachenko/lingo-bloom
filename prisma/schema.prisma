@@ -84,7 +84,7 @@ model GrammarRule {
   checked     Boolean   @default(false)
   data        Json     
   languageId  Int
-  language    Language @relation(fields: [languageId], references: [id])
+  language    Language @relation(fields: [languageId], references: [id], onDelete: Cascade)
   tasks Task[]
 }
 
@@ -111,17 +111,17 @@ model Task {
   id              Int            @id @default(autoincrement())
   checked         Boolean        @default(false)
   languageId      Int
-  language        Language       @relation(fields: [languageId], references: [id])
+  language        Language       @relation(fields: [languageId], references: [id], onDelete: Cascade)
   taskTypeId      Int
-  taskType        TaskType       @relation(fields: [taskTypeId], references: [id])
+  taskType        TaskType       @relation(fields: [taskTypeId], references: [id], onDelete: Cascade)
   taskPurposeId   Int
-  taskPurpose     TaskPurpose    @relation(fields: [taskPurposeId], references: [id])
+  taskPurpose     TaskPurpose    @relation(fields: [taskPurposeId], references: [id], onDelete: Cascade)
   taskTopicId     Int?
-  taskTopic       TaskTopic?     @relation(fields: [taskTopicId], references: [id])
+  taskTopic       TaskTopic?     @relation(fields: [taskTopicId], references: [id], onDelete: Cascade)
   languageLevelId Int
-  languageLevel   LanguageLevel  @relation(fields: [languageLevelId], references: [id])
+  languageLevel   LanguageLevel  @relation(fields: [languageLevelId], references: [id], onDelete: Cascade)
   grammarRuleId   Int?
-  grammarRule     GrammarRule?   @relation(fields: [grammarRuleId], references: [id])
+  grammarRule     GrammarRule?   @relation(fields: [grammarRuleId], references: [id], onDelete: Cascade)
   data            Json           // Store type-specific details as JSON
   TaskProgress    TaskProgress[]
 }
@@ -146,8 +146,8 @@ model TaskProgress {
   tries       Int       @default(0) // Number of attempts for this task
   score       Float     @default(0) // Average score across attempts
   completedAt DateTime?
-  user        User      @relation(fields: [userId], references: [id])
-  task        Task      @relation(fields: [taskId], references: [id])
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  task        Task      @relation(fields: [taskId], references: [id], onDelete: Cascade)
 
   @@unique([userId, taskId]) // Ensure one record per user-task pair
 }

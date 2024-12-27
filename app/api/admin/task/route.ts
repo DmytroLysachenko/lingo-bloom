@@ -72,6 +72,8 @@ export const POST = apiMiddleware(async (request: NextRequest) => {
       404
     );
 
+  console.log(taskPurpose.name, grammarRuleId);
+
   const grammarRule =
     taskPurpose.name === "Grammar" && grammarRuleId
       ? await findGrammarRuleById(grammarRuleId).catch(() => {
@@ -82,7 +84,7 @@ export const POST = apiMiddleware(async (request: NextRequest) => {
         })
       : undefined;
 
-  if (!grammarRule)
+  if (taskPurpose.name === "Grammar" && grammarRuleId && !grammarRule)
     throw new ApiError(
       `There is no grammar rule with such id: ${grammarRuleId}`,
       404
@@ -100,7 +102,7 @@ export const POST = apiMiddleware(async (request: NextRequest) => {
       )?.name
     : undefined;
 
-  if (!taskTopic)
+  if (!taskTopic && taskTopicId)
     throw new ApiError(
       `There is no task topic with such id: ${taskTopicId}`,
       404
@@ -114,6 +116,8 @@ export const POST = apiMiddleware(async (request: NextRequest) => {
     taskTopic,
     grammarRuleTitle,
   });
+
+  console.log(data);
 
   if (!data)
     throw new ApiError(

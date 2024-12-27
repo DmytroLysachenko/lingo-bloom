@@ -6,8 +6,8 @@ interface ICreateTask {
   languageLevelId: number;
   taskPurposeId: number;
   taskTypeId: number;
-  taskTopicId?: number;
-  grammarRuleId?: number;
+  taskTopicId?: number | null;
+  grammarRuleId?: number | null;
   data: string;
 }
 
@@ -16,9 +16,9 @@ interface IUpdateTask {
   languageId?: number;
   languageLevelId?: number;
   taskTypeId?: number;
-  taskTopicId?: number;
   taskPurposeId?: number;
-  grammarRuleId?: number;
+  taskTopicId?: number | null;
+  grammarRuleId?: number | null;
   data?: string;
 }
 export const findAllTasks = async () => {

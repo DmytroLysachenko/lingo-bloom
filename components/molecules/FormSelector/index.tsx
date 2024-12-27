@@ -22,6 +22,7 @@ interface FormSelectorProps<T extends FieldValues> {
   control: Control<T>;
   errors: FieldErrors<T>;
   options: { value: string; name: string }[];
+  placeholder: string;
 }
 const FormSelector = <T extends FieldValues>({
   id,
@@ -29,6 +30,7 @@ const FormSelector = <T extends FieldValues>({
   control,
   errors,
   options,
+  placeholder,
 }: FormSelectorProps<T>) => {
   return (
     <div className="space-y-2">
@@ -43,7 +45,7 @@ const FormSelector = <T extends FieldValues>({
             defaultValue={field.value}
           >
             <SelectTrigger id={id}>
-              <SelectValue placeholder="Select language" />
+              <SelectValue placeholder={placeholder} />
             </SelectTrigger>
             <SelectContent>
               {options.map((option) => (

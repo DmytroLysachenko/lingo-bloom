@@ -46,10 +46,10 @@ export const updateTaskSchema = z.object({
   id: z.number().int().positive(),
   languageId: z.number().int().positive().optional(),
   languageLevelId: z.number().int().positive().optional(),
-  taskTopicId: z.number().int().positive().optional(),
   taskTypeId: z.number().int().positive().optional(),
   taskPurposeId: z.number().int().positive().optional(),
-  grammarRuleId: z.number().int().positive().optional(),
+  taskTopicId: z.number().int().positive().optional().nullable(),
+  grammarRuleId: z.number().int().positive().optional().nullable(),
   data: z.string().optional(),
 });
 

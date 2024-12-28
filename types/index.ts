@@ -77,4 +77,6 @@ export interface TaskPurpose {
 export interface TaskType {
   id: number;
   name: string;
+  promptSchema: string;
+  taskPurposeId: number;
 }

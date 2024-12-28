@@ -96,10 +96,14 @@ const TaskForm = ({
     (purpose) => purpose.name === "Grammar"
   )?.id;
 
-  const taskTypeIdOptions = taskTypes.map((type) => ({
-    value: type.id.toString(),
-    name: type.name,
-  }));
+  const taskTypeIdOptions = taskTypes
+    .filter((type) => type.taskPurposeId.toString() === selectedPurposeId)
+    .map((type) => {
+      return {
+        value: type.id.toString(),
+        name: type.name,
+      };
+    });
 
   const onSubmit = async (data: TaskFormData) => {
     const numericData = {
@@ -184,24 +188,25 @@ const TaskForm = ({
         />
 
         {selectedLanguageId && (
-          <>
-            <FormSelector
-              id="taskTypeId"
-              label="Task type"
-              control={control}
-              errors={errors}
-              options={taskTypeIdOptions}
-              placeholder="Select a task type"
-            />
-            <FormSelector
-              id="taskPurposeId"
-              label="Task purpose"
-              control={control}
-              errors={errors}
-              options={taskPurposeIdOptions}
-              placeholder="Select a task purpose"
-            />
-          </>
+          <FormSelector
+            id="taskPurposeId"
+            label="Task purpose"
+            control={control}
+            errors={errors}
+            options={taskPurposeIdOptions}
+            placeholder="Select a task purpose"
+          />
+        )}
+
+        {selectedPurposeId && selectedLanguageId && (
+          <FormSelector
+            id="taskTypeId"
+            label="Task type"
+            control={control}
+            errors={errors}
+            options={taskTypeIdOptions}
+            placeholder="Select a task type"
+          />
         )}
 
         {selectedLanguageId &&

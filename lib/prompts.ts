@@ -21,13 +21,13 @@ export const generateGrammarRulePrompt = (
       }
   }
 
+  Ensure that example is in ${language} language!
+
   Ensure the rule does not repeat any from the following list: ${JSON.stringify(
     existingTitles
   )}.
 
   This rule should be extensive enough for non-native speakers to understand how to use it in daily communication.
-
-  Ensure that example is in Polish language and only comments translated.
   `;
 
 // const READING_PROMPT_SCHEMAS = {

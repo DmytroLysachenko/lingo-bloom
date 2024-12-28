@@ -24,12 +24,12 @@ export const generateGrammarRule = async (
   console.log(prompt);
 
   const response = await openai.chat.completions.create({
-    model: "gpt-4o",
+    model: "gpt-4o-mini",
     messages: [
       {
         role: "developer",
         content:
-          "You are assistant for generation JSON data. You always return valid JSON object without additional description or context. ",
+          "You are assistant for generation JSON data. You always return valid JSON object without additional description or context.",
       },
       {
         role: "user",

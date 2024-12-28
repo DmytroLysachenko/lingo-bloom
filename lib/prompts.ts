@@ -17,7 +17,7 @@ export const generateGrammarRulePrompt = (
       uk: {
         title: "Detailed grammar rule name in Ukrainian",
         description: "Comprehensive and Detailed explanation in Ukrainian",
-        example: "Example in ${language} language with Ukrainian comments if needed"
+        example: "Example in ${language} with Ukrainian comments if needed"
       }
   }
 
@@ -26,157 +26,77 @@ export const generateGrammarRulePrompt = (
   )}.
 
   This rule should be extensive enough for non-native speakers to understand how to use it in daily communication.
-  ;`;
 
-export const generateTaskPrompt = ({
-  language,
-  languageLevel,
-  taskPurpose,
-  grammarRuleTitle,
-  taskTopic,
-  taskType,
-}: {
-  language: string;
-  languageLevel: string;
-  taskPurpose: string;
-  taskType: string;
-  grammarRuleTitle?: string;
-  taskTopic?: string;
-}) => {
-  switch (taskType.toLowerCase()) {
-    case "test":
-      return generateTestTaskPrompt({
-        language,
-        languageLevel,
-        taskPurpose,
-        grammarRuleTitle,
-        taskTopic,
-      });
+  Ensure that example is in Polish language and only comments translated.
+  `;
 
-    case "connection":
-      return generateConnectionTaskPrompt({
-        language,
-        languageLevel,
-        taskPurpose,
-        grammarRuleTitle,
-        taskTopic,
-      });
-    case "fill-in-blank":
-      return generateFillInBlankTaskPrompt({
-        language,
-        languageLevel,
-        taskPurpose,
-        grammarRuleTitle,
-        taskTopic,
-      });
-    default:
-      return "";
-  }
-};
+// const READING_PROMPT_SCHEMAS = {
+//   test: `{
+//       text: "Provide a 200-300 word article or text.",
+//       question: "Ask a question about the text.",
+//       answers: ["Answer 1", "Answer 2", "Answer 3", "Answer 4"],
+//       correctAnswer: "Answer 2"
+//     }`,
+//   connection: `{
+//     "columnA": ["title 1", "title 2", "title 3", "title 4"],
+//     "columnB": ["small text 3", "small text 1", " small text 3", " small text 4"],
+//     "matches": [
+//       {"columnAIndex": 0, "columnBIndex": 2},
+//       {"columnAIndex": 1, "columnBIndex": 0},
+//       {"columnAIndex": 2, "columnBIndex": 2},
+//       {"columnAIndex": 3, "columnBIndex": 3}
+//     ]
+//   }`,
+// };
 
-//Test task
-export const generateTestTaskPrompt = ({
-  language,
-  languageLevel,
-  taskPurpose,
-  grammarRuleTitle,
-  taskTopic,
-}: {
-  language: string;
-  languageLevel: string;
-  taskPurpose: string;
-  grammarRuleTitle?: string;
-  taskTopic?: string;
-}): string => `
-  Generate a test-type task for the ${language} language with the following details:
+// const VOCABULARY_PROMPT_SCHEMAS = {
+//   test: `{
+//     question: "Dora is teaching kids, because she is ____ ",
+//     answers: ["Answer 1", "Answer 2", "Answer 3", "Answer 4"],
+//     correctAnswer: "Answer 2"
+//   }`,
+//   connection: `{
+//     "columnA": ["word 1", "word 2", "word 3", "word 4"],
+//     "columnB": ["meaning 1", "meaning 2", "meaning 3", "meaning 4"],
+//     "matches": [
+//       {"columnAIndex": 0, "columnBIndex": 2},
+//       {"columnAIndex": 1, "columnBIndex": 0},
+//       {"columnAIndex": 2, "columnBIndex": 2},
+//       {"columnAIndex": 3, "columnBIndex": 3}
+//     ]
+//   }`,
+// };
 
-  - Approximate task's Language Level: ${languageLevel}
-  - Purpose: ${taskPurposePrompt(taskPurpose)}
-  ${grammarRuleTitle ? `- On Grammar rule: ${grammarRuleTitle}` : ""}
-  ${taskTopic ? ` - Topic: ${taskTopic} ` : ""}
+// const GRAMMAR_PROMPT_SCHEMAS = {
+//   test: `{
+//     question: "Which answer is second?",
+//     answers: ["Answer 1", "Answer 2", "Answer 3", "Answer 4"],
+//     correctAnswer: "Answer 2"
+//   }`,
+//   connection: `{
+//     "columnA": ["apple", "banana", "orange", "grape"],
+//     "columnB": ["fruit", "vegetable", "fruit", "fruit"],
+//     "matches": [
+//       {"columnAIndex": 0, "columnBIndex": 2},
+//       {"columnAIndex": 1, "columnBIndex": 0},
+//       {"columnAIndex": 2, "columnBIndex": 2},
+//       {"columnAIndex": 3, "columnBIndex": 3}
+//     ]
+//   }`,
+//   fillInBlank: `{
+//     "question": "The capital of France is _____ and the largest city in the US is _____",
+//     "blanks": [
+//       {"index": 0, "answer": "Paris"},
+//       {"index": 1, "answer": "New York"}
+//     ]
+//   }`,
+// };
 
-  Follow this schema:
-  {
-    question: "Which answer is second?",
-    answers: ["Answer 1", "Answer 2", "Answer 3", "Answer 4"],
-    correctAnswer: "Answer 2"
-  }
-`;
-
-// Connection Task Prompt
-export const generateConnectionTaskPrompt = ({
-  language,
-  languageLevel,
-  taskPurpose,
-  grammarRuleTitle,
-  taskTopic,
-}: {
-  language: string;
-  languageLevel: string;
-  taskPurpose: string;
-  grammarRuleTitle?: string;
-  taskTopic?: string;
-}): string => `
-  Generate a connection-type task for the ${language} language with the following details:
-
-  - Approximate task's Language Level: ${languageLevel}
-  - Purpose: ${taskPurposePrompt(taskPurpose)}
-  ${grammarRuleTitle ? `- On Grammar rule: ${grammarRuleTitle}` : ""}
-  ${taskTopic ? ` - Topic: ${taskTopic} ` : ""}
-
-  Follow this schema:
-  {
-    "columnA": ["apple", "banana", "orange", "grape"],
-    "columnB": ["fruit", "vegetable", "fruit", "fruit"],
-    "matches": [
-      {"columnAIndex": 0, "columnBIndex": 2},
-      {"columnAIndex": 1, "columnBIndex": 0},
-      {"columnAIndex": 2, "columnBIndex": 2},
-      {"columnAIndex": 3, "columnBIndex": 3}
-    ]
-  }
-`;
-
-// Fill-in-the-Blank Task Prompt
-export const generateFillInBlankTaskPrompt = ({
-  language,
-  languageLevel,
-  taskPurpose,
-  grammarRuleTitle,
-  taskTopic,
-}: {
-  language: string;
-  languageLevel: string;
-  taskPurpose: string;
-  grammarRuleTitle?: string;
-  taskTopic?: string;
-}): string => `
-  Generate a fill-in-blank-type task for the ${language} language with the following details:
-
-  - Approximate task's Language Level: ${languageLevel}
-  - Purpose: ${taskPurposePrompt(taskPurpose)}
-  ${grammarRuleTitle ? `- On Grammar rule: ${grammarRuleTitle}` : ""}
-  ${taskTopic ? ` - Topic: ${taskTopic} ` : ""}
-
-  Follow this schema:
-  {
-    "question": "The capital of France is _____ and the largest city in the US is _____",
-    "blanks": [
-      {"index": 0, "answer": "Paris"},
-      {"index": 1, "answer": "New York"}
-    ]
-  }
-`;
-
-const taskPurposePrompt = (purpose: string): string => {
-  switch (purpose.toLowerCase()) {
-    case "grammar":
-      return "Grammar-focused: Evaluate the learner's understanding of grammatical structures and rules.";
-    case "vocabulary":
-      return "Vocabulary-focused: Test the learner's knowledge of specific words, phrases, and their appropriate usage.";
-    case "reading":
-      return "Reading Comprehension: Assess the learner’s ability to understand and interpret written text";
-    default:
-      return "General - this task has a broad focus.";
-  }
-};
+// const PURPOSE_EXPLANATION = {
+//   grammar:
+//     "This task evaluates the user's understanding of grammar rules and their ability to apply them correctly in everyday speech. The focus is on practical usage and rule comprehension.",
+//   vocabulary:
+//     "This task tests the user's knowledge of vocabulary, emphasizing the understanding and usage of interesting or less common words.",
+//   reading:
+//     "This task assesses the user's ability to understand and interpret written texts, focusing on grasping the context and main ideas effectively.",
+// };

@@ -72,8 +72,6 @@ export const POST = apiMiddleware(async (request: NextRequest) => {
       404
     );
 
-  console.log(taskPurpose.name, grammarRuleId);
-
   const grammarRule =
     taskPurpose.name === "Grammar" && grammarRuleId
       ? await findGrammarRuleById(grammarRuleId).catch(() => {
@@ -111,8 +109,8 @@ export const POST = apiMiddleware(async (request: NextRequest) => {
   const data = await generateTask({
     language: language.name,
     languageLevel: languageLevel.name,
-    taskPurpose: taskPurpose.name,
-    taskType: taskType.name,
+    taskPurposePrompt: taskPurpose.prompt,
+    taskTypePromptSchema: taskType.promptSchema,
     taskTopic,
     grammarRuleTitle,
   });

@@ -1,11 +1,11 @@
 import OpenAI from "openai";
-import { generateGrammarRulePrompt, generateTaskPrompt } from "./prompts";
+import { generateGrammarRulePrompt } from "./prompts";
 
 interface GenerateTaskParams {
   language: string;
   languageLevel: string;
-  taskPurpose: string;
-  taskType: string;
+  taskPurposePrompt: string;
+  taskTypePromptSchema: string;
   taskTopic?: string;
   grammarRuleTitle?: string;
 }
@@ -21,8 +21,10 @@ export const generateGrammarRule = async (
 ) => {
   const prompt = generateGrammarRulePrompt(language, existingRulesTitles);
 
+  console.log(prompt);
+
   const response = await openai.chat.completions.create({
-    model: "gpt-4o-mini",
+    model: "gpt-4o",
     messages: [
       {
         role: "developer",
@@ -44,20 +46,11 @@ export const generateGrammarRule = async (
 export const generateTask = async ({
   language,
   languageLevel,
-  taskPurpose,
-  taskType,
+  taskPurposePrompt,
+  taskTypePromptSchema,
   grammarRuleTitle,
   taskTopic,
 }: GenerateTaskParams) => {
-  const prompt = generateTaskPrompt({
-    language,
-    languageLevel,
-    taskPurpose,
-    taskTopic,
-    taskType,
-    grammarRuleTitle,
-  });
-
   const response = await openai.chat.completions.create({
     model: "gpt-4o-mini",
     messages: [
@@ -68,7 +61,18 @@ export const generateTask = async ({
       },
       {
         role: "user",
-        content: prompt,
+        content: `
+  Generate a test-type task for the ${language} language with the following details:
+
+  - Approximate task's Language Level: ${languageLevel}
+  - Purpose: ${taskPurposePrompt}
+  ${grammarRuleTitle ? `- On Grammar rule: ${grammarRuleTitle}` : ""}
+  ${taskTopic ? ` - Topic: ${taskTopic} ` : ""}
+
+  Follow this schema:
+
+  ${taskTypePromptSchema}
+`,
       },
     ],
   });

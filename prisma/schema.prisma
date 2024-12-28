@@ -74,31 +74,35 @@ model Language {
 
 model LanguageLevel {
   id          Int     @id @default(autoincrement())
-  name       String  @unique // e.g., "A1", "A2", "B1", "B2"
+  name        String  @unique // e.g., "A1", "A2", "B1", "B2"
   description String?
   tasks       Task[]
 }
 
 model GrammarRule {
-  id          Int      @id @default(autoincrement())
-  checked     Boolean   @default(false)
-  data        Json     
-  languageId  Int
-  language    Language @relation(fields: [languageId], references: [id], onDelete: Cascade)
-  tasks Task[]
+  id         Int      @id @default(autoincrement())
+  checked    Boolean  @default(false)
+  data       Json
+  languageId Int
+  language   Language @relation(fields: [languageId], references: [id], onDelete: Cascade)
+  tasks      Task[]
 }
 
-
 model TaskType {
-  id    Int    @id @default(autoincrement())
-  name  String @unique // e.g., "test", "fill-in-the-blank", "connections"
-  tasks Task[]
+  id            Int         @id @default(autoincrement())
+  name          String      @unique // e.g., "test", "fill-in-the-blank", "connections"
+  promptSchema  String
+  taskPurposeId Int
+  taskPurpose   TaskPurpose @relation(fields: [taskPurposeId], references: [id], onDelete: Cascade)
+  tasks         Task[]
 }
 
 model TaskPurpose {
-  id    Int    @id @default(autoincrement())
-  name  String @unique // e.g., "grammar", "vocabulary", "reading", "listening"
-  tasks Task[]
+  id       Int        @id @default(autoincrement())
+  name     String     @unique // e.g., "grammar", "vocabulary", "reading", "listening"
+  prompt   String // e.g., "grammar", "vocabulary", "reading", "listening"
+  tasks    Task[]
+  TaskType TaskType[]
 }
 
 model TaskTopic {
@@ -122,7 +126,7 @@ model Task {
   languageLevel   LanguageLevel  @relation(fields: [languageLevelId], references: [id], onDelete: Cascade)
   grammarRuleId   Int?
   grammarRule     GrammarRule?   @relation(fields: [grammarRuleId], references: [id], onDelete: Cascade)
-  data            Json           // Store type-specific details as JSON
+  data            Json // Store type-specific details as JSON
   TaskProgress    TaskProgress[]
 }
 

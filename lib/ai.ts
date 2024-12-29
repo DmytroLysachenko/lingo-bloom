@@ -1,11 +1,12 @@
 import OpenAI from "openai";
 import { generateGrammarRulePrompt } from "./prompts";
+import { JsonValue } from "@prisma/client/runtime/library";
 
 interface GenerateTaskParams {
   language: string;
   languageLevel: string;
   taskPurposePrompt: string;
-  taskTypePromptSchema: string;
+  taskTypePromptSchema: JsonValue;
   taskTopic?: string;
   grammarRuleTitle?: string;
 }

@@ -3,6 +3,8 @@ import { prisma } from "./prisma";
 
 interface ITaskType {
   name: string;
+  promptSchema: string;
+  taskPurposeId: number;
 }
 
 export const findAllTaskTypes = async () => {
@@ -16,15 +18,31 @@ export const findTaskTypeById = async (id: number) => {
 };
 
 export const createTaskType = async (data: ITaskType) => {
+  const { name, promptSchema, taskPurposeId } = data;
+
   return prisma.taskType.create({
-    data,
+    data: {
+      name,
+      promptSchema,
+      taskPurpose: {
+        connect: { id: taskPurposeId },
+      },
+    },
   });
 };
 
 export const updateTaskType = async (id: number, data: ITaskType) => {
+  const { name, promptSchema, taskPurposeId } = data;
+
   return prisma.taskType.update({
     where: { id },
-    data,
+    data: {
+      name,
+      promptSchema,
+      taskPurpose: {
+        connect: { id: taskPurposeId },
+      },
+    },
   });
 };
 

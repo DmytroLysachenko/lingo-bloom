@@ -1,3 +1,5 @@
+import { JsonValue } from "@prisma/client/runtime/library";
+
 export interface Task {
   level: string;
   language: string;
@@ -77,6 +79,6 @@ export interface TaskPurpose {
 export interface TaskType {
   id: number;
   name: string;
-  promptSchema: string;
+  promptSchema: JsonValue;
   taskPurposeId: number;
 }

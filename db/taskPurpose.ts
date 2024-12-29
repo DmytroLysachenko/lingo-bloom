@@ -3,6 +3,7 @@ import { prisma } from "./prisma";
 
 interface ITaskPurpose {
   name: string;
+  prompt: string;
 }
 
 export const findAllTaskPurposes = async () => {

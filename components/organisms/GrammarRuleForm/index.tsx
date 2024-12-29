@@ -69,6 +69,7 @@ const GrammarRuleForm = ({ languages }: GrammarRuleFormProps) => {
           control={control}
           errors={errors}
           options={languageOptions}
+          placeholder="Select a language"
         />
 
         <Button

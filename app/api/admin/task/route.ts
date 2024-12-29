@@ -130,8 +130,8 @@ export const POST = apiMiddleware(async (request: NextRequest) => {
     languageLevelId,
     taskPurposeId,
     taskTypeId,
-    taskTopicId,
-    grammarRuleId,
+    taskTopicId: taskTopicId ?? null,
+    grammarRuleId: grammarRuleId ?? null,
     data,
   }).catch(() => {
     throw new ApiError("Database error while creating task.", 500);

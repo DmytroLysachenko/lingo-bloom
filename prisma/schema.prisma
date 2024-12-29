@@ -90,8 +90,8 @@ model GrammarRule {
 
 model TaskType {
   id            Int         @id @default(autoincrement())
-  name          String      @unique // e.g., "test", "fill-in-the-blank", "connections"
-  promptSchema  String
+  name          String      @unique 
+  promptSchema  Json?
   taskPurposeId Int
   taskPurpose   TaskPurpose @relation(fields: [taskPurposeId], references: [id], onDelete: Cascade)
   tasks         Task[]

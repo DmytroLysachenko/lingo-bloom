@@ -30,8 +30,16 @@ export const findGrammarRuleById = async (id: number) => {
 };
 
 export const createGrammarRule = async (data: ICreateGrammarRule) => {
+  const { languageId, data: jsonData, checked = false } = data;
+
   return prisma.grammarRule.create({
-    data,
+    data: {
+      language: {
+        connect: { id: languageId },
+      },
+      data: jsonData,
+      checked,
+    },
   });
 };
 
@@ -39,9 +47,17 @@ export const updateGrammarRule = async (
   id: number,
   data: IUpdateGrammarRule
 ) => {
+  const { languageId, data: jsonData, checked } = data;
+
   return prisma.grammarRule.update({
     where: { id },
-    data,
+    data: {
+      language: {
+        connect: { id: languageId },
+      },
+      data: jsonData,
+      checked,
+    },
   });
 };
 

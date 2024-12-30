@@ -2,95 +2,36 @@ export const generateGrammarRulePrompt = (
   language: string,
   existingTitles: string[] | null
 ) => `
-  Generate a grammar rule JSON object for the ${language} language. Follow this schema:
+  Generate a grammar rule JSON object for the ${language} language. 
+  Return the object **only**, without any additional text, explanation, or formatting. 
+
+  Follow this schema:
   {
-      en: {
-        title: "Detailed grammar rule name in English",
-        description: "Comprehensive and Detailed rule explanation in English",
-        example: "Examples in ${language} language with English comments if needed"
+      "en": {
+          "title": "Detailed grammar rule name in English",
+          "description": "Comprehensive and detailed explanation in English, suitable for non-native speakers.",
+          "example": "Examples in ${language} language, with English comments only when strictly needed to explain context or clarify usage."
       },
-      pl: {
-        title: "Detailed grammar rule name in Polish",
-        description: "Comprehensive and Detailed explanation in Polish",
-        example: "Example in ${language} language with Polish comments if needed"
+      "pl": {
+          "title": "Detailed grammar rule name in Polish",
+          "description": "Comprehensive and detailed explanation in Polish, suitable for non-native speakers.",
+          "example": "Examples in ${language} language with Polish comments only when strictly needed to explain context or clarify usage."
       },
-      uk: {
-        title: "Detailed grammar rule name in Ukrainian",
-        description: "Comprehensive and Detailed explanation in Ukrainian",
-        example: "Example in ${language} with Ukrainian comments if needed"
+      "uk": {
+          "title": "Detailed grammar rule name in Ukrainian",
+          "description": "Comprehensive and detailed explanation in Ukrainian, suitable for non-native speakers.",
+          "example": "Examples in ${language} language with Ukrainian comments only when strictly needed to explain context or clarify usage."
       }
   }
 
-  Ensure that example is in ${language} language!
-
-  Ensure the rule does not repeat any from the following list: ${JSON.stringify(
+  Ensure the following:
+  - The response must be **valid JSON**.
+  - Examples must be in ${language} language.
+  - The rule must not repeat titles in this list: ${JSON.stringify(
     existingTitles
   )}.
-
-  This rule should be extensive enough for non-native speakers to understand how to use it in daily communication.
-  `;
-
-// const READING_PROMPT_SCHEMAS = {
-//   test: `{
-//       text: "Provide a 200-300 word article or text.",
-//       question: "Ask a question about the text.",
-//       answers: ["Answer 1", "Answer 2", "Answer 3", "Answer 4"],
-//       correctAnswer: "Answer 2"
-//     }`,
-//   connection: `{
-//     "columnA": ["title 1", "title 2", "title 3", "title 4"],
-//     "columnB": ["small text 3", "small text 1", " small text 3", " small text 4"],
-//     "matches": [
-//       {"columnAIndex": 0, "columnBIndex": 2},
-//       {"columnAIndex": 1, "columnBIndex": 0},
-//       {"columnAIndex": 2, "columnBIndex": 2},
-//       {"columnAIndex": 3, "columnBIndex": 3}
-//     ]
-//   }`,
-// };
-
-// const VOCABULARY_PROMPT_SCHEMAS = {
-//   test: `{
-//     question: "Dora is teaching kids, because she is ____ ",
-//     answers: ["Answer 1", "Answer 2", "Answer 3", "Answer 4"],
-//     correctAnswer: "Answer 2"
-//   }`,
-//   connection: `{
-//     "columnA": ["word 1", "word 2", "word 3", "word 4"],
-//     "columnB": ["meaning 1", "meaning 2", "meaning 3", "meaning 4"],
-//     "matches": [
-//       {"columnAIndex": 0, "columnBIndex": 2},
-//       {"columnAIndex": 1, "columnBIndex": 0},
-//       {"columnAIndex": 2, "columnBIndex": 2},
-//       {"columnAIndex": 3, "columnBIndex": 3}
-//     ]
-//   }`,
-// };
-
-// const GRAMMAR_PROMPT_SCHEMAS = {
-//   test: `{
-//     question: "Which answer is second?",
-//     answers: ["Answer 1", "Answer 2", "Answer 3", "Answer 4"],
-//     correctAnswer: "Answer 2"
-//   }`,
-//   connection: `{
-//     "columnA": ["apple", "banana", "orange", "grape"],
-//     "columnB": ["fruit", "vegetable", "fruit", "fruit"],
-//     "matches": [
-//       {"columnAIndex": 0, "columnBIndex": 2},
-//       {"columnAIndex": 1, "columnBIndex": 0},
-//       {"columnAIndex": 2, "columnBIndex": 2},
-//       {"columnAIndex": 3, "columnBIndex": 3}
-//     ]
-//   }`,
-//   fillInBlank: `{
-//     "question": "The capital of France is _____ and the largest city in the US is _____",
-//     "blanks": [
-//       {"index": 0, "answer": "Paris"},
-//       {"index": 1, "answer": "New York"}
-//     ]
-//   }`,
-// };
+  - Do not include any additional text outside of the JSON object.
+`;
 
 // const PURPOSE_EXPLANATION = {
 //   grammar:

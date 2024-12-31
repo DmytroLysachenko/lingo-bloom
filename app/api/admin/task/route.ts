@@ -81,23 +81,16 @@ export const POST = apiMiddleware(async (request: NextRequest) => {
           );
         })
       : undefined;
-
   if (taskPurpose.name === "Grammar" && grammarRuleId && !grammarRule)
     throw new ApiError(
       `There is no grammar rule with such id: ${grammarRuleId}`,
       404
     );
 
-  const grammarRuleTitle = grammarRule
-    ? await JSON.parse(grammarRule.data as string).en.title
-    : undefined;
-
   const taskTopic = taskTopicId
-    ? (
-        await findTaskTopicById(taskTopicId).catch(() => {
-          throw new ApiError("Database error while fetching task topic.", 500);
-        })
-      )?.name
+    ? await findTaskTopicById(taskTopicId).catch(() => {
+        throw new ApiError("Database error while fetching task topic.", 500);
+      })
     : undefined;
 
   if (!taskTopic && taskTopicId)
@@ -106,16 +99,20 @@ export const POST = apiMiddleware(async (request: NextRequest) => {
       404
     );
 
+  const grammarRuleData = grammarRule
+    ? JSON.parse(grammarRule.data as string)
+    : undefined;
+
+  console.log(grammarRule);
   const data = await generateTask({
-    language: language.name,
-    languageLevel: languageLevel.name,
-    taskPurposePrompt: taskPurpose.prompt,
-    taskTypePromptSchema: taskType.promptSchema,
+    language,
+    languageLevel,
     taskTopic,
-    grammarRuleTitle,
+    taskType,
+    grammarRuleData,
   });
 
-  console.log(data);
+  // console.log(data);
 
   if (!data)
     throw new ApiError(

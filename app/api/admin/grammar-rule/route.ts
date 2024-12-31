@@ -50,11 +50,19 @@ export const POST = apiMiddleware(async (request: NextRequest) => {
     );
   }
 
-  grammarRuleDataSchema.parse(JSON.parse(data));
+  let parsedData;
+  try {
+    parsedData = JSON.parse(data);
+  } catch (error) {
+    console.log(error);
+    throw new ApiError(`Error parsing the generated data`, 500);
+  }
+
+  grammarRuleDataSchema.parse(parsedData);
 
   const newRule = await createGrammarRule({
     languageId,
-    data,
+    data: parsedData,
   }).catch(() => {
     throw new ApiError("Database error while creating grammar rule.", 500);
   });

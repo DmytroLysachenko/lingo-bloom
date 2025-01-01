@@ -99,20 +99,13 @@ export const POST = apiMiddleware(async (request: NextRequest) => {
       404
     );
 
-  const grammarRuleData = grammarRule
-    ? JSON.parse(grammarRule.data as string)
-    : undefined;
-
-  console.log(grammarRule);
   const data = await generateTask({
     language,
     languageLevel,
     taskTopic,
     taskType,
-    grammarRuleData,
+    grammarRule: grammarRule?.data.en,
   });
-
-  // console.log(data);
 
   if (!data)
     throw new ApiError(
@@ -120,7 +113,7 @@ export const POST = apiMiddleware(async (request: NextRequest) => {
       500
     );
 
-  taskDataScheme.parse(JSON.parse(data));
+  const parsedData = taskDataScheme.parse(JSON.parse(data));
 
   const newTask = await createTask({
     languageId,
@@ -129,7 +122,7 @@ export const POST = apiMiddleware(async (request: NextRequest) => {
     taskTypeId,
     taskTopicId: taskTopicId ?? null,
     grammarRuleId: grammarRuleId ?? null,
-    data,
+    data: parsedData,
   }).catch(() => {
     throw new ApiError("Database error while creating task.", 500);
   });

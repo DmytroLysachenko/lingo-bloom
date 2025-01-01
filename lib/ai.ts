@@ -1,13 +1,13 @@
 import OpenAI from "openai";
 import { generateGrammarRulePrompt, generateTaskPrompt } from "./prompts";
-import { GrammarRuleData } from "@/types";
+import { GrammarRuleTranslation } from "@/types";
 import { Language, LanguageLevel, TaskTopic, TaskType } from "@prisma/client";
 
 interface GenerateTaskParams {
   language: Language;
   languageLevel: LanguageLevel;
   taskType: TaskType;
-  grammarRuleData?: GrammarRuleData;
+  grammarRule?: GrammarRuleTranslation;
   taskTopic?: TaskTopic | null;
 }
 
@@ -26,8 +26,6 @@ export const generateGrammarRule = async (
   existingRulesTitles: string[]
 ) => {
   const prompt = generateGrammarRulePrompt(language, existingRulesTitles);
-
-  console.log(prompt);
 
   const response = await openai.chat.completions.create({
     model: "gpt-4o",
@@ -53,18 +51,18 @@ export const generateTask = async ({
   language,
   languageLevel,
   taskType,
-  grammarRuleData,
+  grammarRule,
   taskTopic,
 }: GenerateTaskParams) => {
   const prompt = generateTaskPrompt({
     language: language.name,
     languageLevel: languageLevel.name,
     taskType,
-    grammarRuleData,
+    grammarRule,
     taskTopic: taskTopic?.name || undefined,
   });
 
-  console.log(typeof taskType.promptSchema, prompt);
+  console.log(prompt);
 
   const response = await openai.chat.completions.create({
     model: "gpt-4",

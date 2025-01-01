@@ -83,7 +83,7 @@ const GrammarRuleForm = ({ languages }: GrammarRuleFormProps) => {
         <>
           <h2 className="text-2xl font-semibold my-5">Created Rule:</h2>
           <p className="text-xl block bg-primary-200 border border-solid border-neutral-600 rounded-xl p-4">
-            {generatedRule.data}
+            {JSON.stringify(generatedRule.data)}
           </p>
           <div className="flex justify-between p-2">
             <Button onClick={onAcceptRule}>Accept</Button>

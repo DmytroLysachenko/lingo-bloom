@@ -1,32 +1,45 @@
+import { grammarRuleSchema } from "@/schemas";
 import { prisma } from "./prisma";
 
 interface ICreateGrammarRule {
   languageId: number;
-  data: string;
+  data: {
+    en: { title: string; description: string; example: string };
+    pl: { title: string; description: string; example: string };
+    uk: { title: string; description: string; example: string };
+  };
   checked?: boolean;
 }
 
 interface IUpdateGrammarRule {
   id: number;
   languageId?: number;
-  data?: string;
+  data?: {
+    en: { title: string; description: string; example: string };
+    pl: { title: string; description: string; example: string };
+    uk: { title: string; description: string; example: string };
+  };
   checked?: boolean;
 }
 
 export const findAllGrammarRules = async () => {
-  return prisma.grammarRule.findMany();
+  const rules = await prisma.grammarRule.findMany();
+  return rules.map((rule) => grammarRuleSchema.parse(rule));
 };
 
 export const findAllLanguageGrammarRules = async (languageId: number) => {
-  return prisma.grammarRule.findMany({
+  const rules = await prisma.grammarRule.findMany({
     where: { languageId },
   });
+  return rules.map((rule) => grammarRuleSchema.parse(rule));
 };
 
 export const findGrammarRuleById = async (id: number) => {
-  return prisma.grammarRule.findUnique({
+  const rule = await prisma.grammarRule.findUnique({
     where: { id },
   });
+
+  return grammarRuleSchema.parse(rule);
 };
 
 export const createGrammarRule = async (data: ICreateGrammarRule) => {
@@ -47,17 +60,9 @@ export const updateGrammarRule = async (
   id: number,
   data: IUpdateGrammarRule
 ) => {
-  const { languageId, data: jsonData, checked } = data;
-
   return prisma.grammarRule.update({
     where: { id },
-    data: {
-      language: {
-        connect: { id: languageId },
-      },
-      data: jsonData,
-      checked,
-    },
+    data,
   });
 };
 

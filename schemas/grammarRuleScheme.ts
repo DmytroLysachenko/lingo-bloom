@@ -12,6 +12,13 @@ export const grammarRuleDataSchema = z.object({
   uk: languageRuleContentSchema,
 });
 
+export const grammarRuleSchema = z.object({
+  id: z.number().positive("id must be a positive number"),
+  languageId: z.number().positive("id must be a positive number"),
+  checked: z.boolean(),
+  data: grammarRuleDataSchema,
+});
+
 export const createGrammarRuleSchema = z.object({
   languageId: z.number().positive("languageId must be a positive number"),
 });
@@ -20,7 +27,7 @@ export const updateGrammarRuleSchema = z.object({
   id: z.number().positive("id must be a positive number"),
   languageId: z.number().positive("id must be a positive number").optional(),
   checked: z.boolean().optional(),
-  data: z.string().optional(),
+  data: grammarRuleDataSchema,
 });
 
 export const deleteGrammarRuleSchema = z.object({

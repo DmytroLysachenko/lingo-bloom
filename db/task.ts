@@ -1,4 +1,5 @@
 // src/db/task.ts
+import { ITaskData } from "@/schemas";
 import { prisma } from "./prisma";
 
 interface ICreateTask {
@@ -8,7 +9,7 @@ interface ICreateTask {
   taskTypeId: number;
   taskTopicId?: number | null;
   grammarRuleId?: number | null;
-  data: string;
+  data: ITaskData;
 }
 
 interface IUpdateTask {
@@ -19,7 +20,7 @@ interface IUpdateTask {
   taskPurposeId?: number;
   taskTopicId?: number | null;
   grammarRuleId?: number | null;
-  data?: string;
+  data?: ITaskData;
 }
 export const findAllTasks = async () => {
   return prisma.task.findMany();

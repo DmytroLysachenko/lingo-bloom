@@ -38,7 +38,7 @@ export interface TaskStats {
   triesPerTask: number;
 }
 
-interface GrammarRuleTranslation {
+export interface GrammarRuleTranslation {
   title: string;
   description: string;
   example: string;

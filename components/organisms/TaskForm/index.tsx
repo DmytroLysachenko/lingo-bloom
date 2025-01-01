@@ -13,6 +13,7 @@ import {
 import FormSelector from "@components/molecules/FormSelector";
 import axios from "axios";
 import { useState } from "react";
+import { ITaskData } from "@/schemas";
 
 interface TaskFormData {
   languageId: string;
@@ -56,7 +57,7 @@ const TaskForm = ({
     taskPurposeId: number;
     taskTopicId?: number;
     grammarRuleId?: number;
-    data: string;
+    data: ITaskData;
   }>();
 
   const [isLoading, setIsLoading] = useState(false);
@@ -232,7 +233,7 @@ const TaskForm = ({
         <>
           <h2 className="text-2xl font-semibold my-5">Created Task:</h2>
           <p className="text-xl block bg-primary-200 border border-solid border-neutral-600 rounded-xl p-4">
-            {generatedTask.data}
+            {JSON.stringify(generatedTask.data)}
           </p>
           <div className="flex justify-between p-2">
             <Button onClick={onAcceptTask}>Accept</Button>

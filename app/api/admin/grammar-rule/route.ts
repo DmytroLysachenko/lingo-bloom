@@ -7,7 +7,7 @@ import {
 } from "@/db/grammarRule";
 import { findLanguageById } from "@/db/language";
 import { generateGrammarRule } from "@/lib/ai";
-import { ApiError, parseJsonData } from "@/lib/utils";
+import { ApiError } from "@/lib/utils";
 import {
   createGrammarRuleSchema,
   deleteGrammarRuleSchema,
@@ -37,9 +37,7 @@ export const POST = apiMiddleware(async (request: NextRequest) => {
     throw new ApiError(`Language with id ${languageId} not found.`, 404);
   }
 
-  const existingRulesTitles = existingRules.map(
-    (rule) => parseJsonData(rule).data.en.title
-  );
+  const existingRulesTitles = existingRules.map((rule) => rule.data.en.title);
 
   const data = await generateGrammarRule(language.name, existingRulesTitles);
 
@@ -50,19 +48,13 @@ export const POST = apiMiddleware(async (request: NextRequest) => {
     );
   }
 
-  let parsedData;
-  try {
-    parsedData = JSON.parse(data);
-  } catch (error) {
-    console.log(error);
-    throw new ApiError(`Error parsing the generated data`, 500);
-  }
+  const parsedData = JSON.parse(data);
 
-  grammarRuleDataSchema.parse(parsedData);
+  const validatedData = grammarRuleDataSchema.parse(parsedData);
 
   const newRule = await createGrammarRule({
     languageId,
-    data: parsedData,
+    data: validatedData,
   }).catch(() => {
     throw new ApiError("Database error while creating grammar rule.", 500);
   });
@@ -78,8 +70,6 @@ export const PATCH = apiMiddleware(async (request: NextRequest) => {
 
   const parsedBody = updateGrammarRuleSchema.parse(body);
 
-  if (parsedBody.data) grammarRuleDataSchema.parse(JSON.parse(parsedBody.data));
-
   const rule = await findGrammarRuleById(parsedBody.id).catch(() => {
     throw new ApiError("Database error while checking rule existance.", 500);
   });
@@ -91,8 +81,6 @@ export const PATCH = apiMiddleware(async (request: NextRequest) => {
   const updatedRule = await updateGrammarRule(parsedBody.id, {
     ...parsedBody,
   });
-
-  console.log(updatedRule);
 
   return NextResponse.json(
     { message: "Successfully approved new grammar rule.", updatedRule },

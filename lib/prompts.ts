@@ -1,4 +1,4 @@
-import { GrammarRuleData } from "@/types";
+import { GrammarRuleTranslation } from "@/types";
 import { TaskType } from "@prisma/client";
 
 interface GenerateTaskPromptParams {
@@ -6,7 +6,7 @@ interface GenerateTaskPromptParams {
   languageLevel: string;
   taskType: TaskType;
   taskTopic?: string;
-  grammarRuleData?: GrammarRuleData;
+  grammarRule?: GrammarRuleTranslation;
 }
 
 export const generateGrammarRulePrompt = (
@@ -49,25 +49,31 @@ export const generateTaskPrompt = ({
   languageLevel,
   taskType,
   taskTopic,
-  grammarRuleData,
+  grammarRule,
 }: GenerateTaskPromptParams) => `
 Generate a ${
   taskType.name
-} task for the ${language} language with the following details:
+} task for the ${language} language. Ensure the task follows these guidelines:
+
+1. The **question** and all other text elements should be written in **${language}**.
+2. Strictly adhere to the provided JSON schema without deviations.
+3. Do not include any text outside the JSON structure.
+
+Details for the task:
 
 - Language Level: ${languageLevel}
 - Purpose: ${taskType.promptPurpose}
 - Topic: ${taskTopic || "General"}
 ${
-  grammarRuleData &&
-  `- Grammar rule: ${grammarRuleData.en.title}
-- Grammar rule description: ${grammarRuleData.en.description}
-- Grammar rule examples: ${grammarRuleData.en.example}`
+  grammarRule &&
+  `- Grammar rule: ${grammarRule.title}
+- Grammar rule description: ${grammarRule.description}
+- Grammar rule examples: ${grammarRule.example}`
 }
 
-Follow this schema:
+Follow this schema exactly:
 
-${taskType.promptSchema}
+${JSON.stringify(taskType.promptSchema)}
 `;
 
 // export const generateGrammarFillInBlankTaskPrompt = ({

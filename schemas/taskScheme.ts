@@ -50,9 +50,22 @@ export const updateTaskSchema = z.object({
   taskPurposeId: z.number().int().positive().optional(),
   taskTopicId: z.number().int().positive().optional().nullable(),
   grammarRuleId: z.number().int().positive().optional().nullable(),
-  data: z.string().optional(),
+  data: taskDataScheme,
 });
 
 export const deleteTaskSchema = z.object({
   id: z.number().int().positive(),
 });
+
+export const taskSchema = z.object({
+  id: z.number().int().positive(),
+  languageId: z.number().int().positive(),
+  languageLevelId: z.number().int().positive(),
+  taskTypeId: z.number().int().positive(),
+  taskPurposeId: z.number().int().positive(),
+  taskTopicId: z.number().int().positive().nullable(),
+  grammarRuleId: z.number().int().positive().nullable(),
+  data: taskDataScheme,
+});
+
+export type ITaskData = z.infer<typeof taskDataScheme>;

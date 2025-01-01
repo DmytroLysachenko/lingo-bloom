@@ -232,9 +232,13 @@ const TaskForm = ({
       {generatedTask ? (
         <>
           <h2 className="text-2xl font-semibold my-5">Created Task:</h2>
-          <p className="text-xl block bg-primary-200 border border-solid border-neutral-600 rounded-xl p-4">
-            {JSON.stringify(generatedTask.data)}
-          </p>
+          <div className="text-xl block bg-primary-200 border border-solid border-neutral-600 rounded-xl p-4">
+            {Object.entries(generatedTask.data).map(([key, value]) => (
+              <p key={key}>
+                {key}: {JSON.stringify(value)}
+              </p>
+            ))}
+          </div>
           <div className="flex justify-between p-2">
             <Button onClick={onAcceptTask}>Accept</Button>
             <Button onClick={onDeleteTask}>Delete</Button>

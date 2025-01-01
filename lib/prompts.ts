@@ -55,10 +55,6 @@ Generate a ${
   taskType.name
 } task for the ${language} language. Ensure the task follows these guidelines:
 
-1. The **question** and all other text elements should be written in **${language}**.
-2. Strictly adhere to the provided JSON schema without deviations.
-3. Do not include any text outside the JSON structure.
-
 Details for the task:
 
 - Language Level: ${languageLevel}
@@ -74,6 +70,13 @@ ${
 Follow this schema exactly:
 
 ${JSON.stringify(taskType.promptSchema)}
+
+Ensure the following:
+
+1. The whole **task** should be written in **${language}**, **no comments in english.**
+2. Strictly adhere to the provided JSON schema without deviations.
+3. Do not include any text outside the JSON structure.
+4. Structure of the question can be the sentence with blank space, in which you need to put correct answer.
 `;
 
 // export const generateGrammarFillInBlankTaskPrompt = ({

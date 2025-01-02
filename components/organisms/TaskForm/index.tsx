@@ -233,10 +233,10 @@ const TaskForm = ({
           )}
 
         <Button
-          disabled={isLoading}
+          disabled={isLoading && generatedTasks.length !== 0}
           className="w-full"
         >
-          Create Task
+          Create Tasks
         </Button>
       </form>
       {generatedTasks.length > 0

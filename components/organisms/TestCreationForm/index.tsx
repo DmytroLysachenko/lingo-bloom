@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 
 import axios from "axios";
 import FormSelector from "@components/molecules/FormSelector";
-import { Language, LanguageLevel } from "@/types";
+import { Language, LanguageLevel } from "@prisma/client";
 
 interface FormData {
   languageId: string;

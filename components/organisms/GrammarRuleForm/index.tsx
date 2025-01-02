@@ -2,10 +2,10 @@
 
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
-import { Language } from "@/types";
 import FormSelector from "@components/molecules/FormSelector";
 import axios from "axios";
 import { useState } from "react";
+import { Language } from "@prisma/client";
 
 interface GrammarRuleFormData {
   languageId: string;

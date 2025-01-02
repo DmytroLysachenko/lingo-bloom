@@ -1,5 +1,5 @@
-import { Language, LanguageLevel } from "@/types";
 import TestCreationForm from "@components/organisms/TestCreationForm";
+import { Language, LanguageLevel } from "@prisma/client";
 
 import React from "react";
 

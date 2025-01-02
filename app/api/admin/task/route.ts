@@ -146,7 +146,10 @@ export const PATCH = apiMiddleware(async (request: NextRequest) => {
   if (!task)
     throw new ApiError(`There is no task with such id: ${parsedBody.id}`, 404);
 
-  const updatedTask = await updateTask(parsedBody.id, { ...parsedBody });
+  const updatedTask = await updateTask(parsedBody.id, {
+    ...parsedBody,
+    checked: true,
+  });
 
   return NextResponse.json(
     { message: "Successfully updated new task.", updatedTask },

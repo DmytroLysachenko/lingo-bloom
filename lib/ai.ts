@@ -28,7 +28,7 @@ export const generateGrammarRule = async (
   const prompt = generateGrammarRulePrompt(language, existingRulesTitles);
 
   const response = await openai.chat.completions.create({
-    model: "gpt-4o",
+    model: "gpt-4o-mini",
     messages: [
       {
         role: "developer",
@@ -62,10 +62,8 @@ export const generateTask = async ({
     taskTopic: taskTopic?.name || undefined,
   });
 
-  console.log(prompt);
-
   const response = await openai.chat.completions.create({
-    model: "gpt-4",
+    model: "gpt-4o-mini",
     messages: [
       {
         role: "developer",
@@ -77,6 +75,12 @@ export const generateTask = async ({
       },
     ],
   });
+
+  console.log(
+    response.choices[0].message
+      .content!.replaceAll("```json", "")
+      .replaceAll("`", "")
+  );
 
   return response.choices[0].message
     .content!.replaceAll("```json", "")

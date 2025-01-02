@@ -66,7 +66,10 @@ export const createTask = async (data: ICreateTask) => {
   });
 };
 
-export const updateTask = async (id: number, data: IUpdateTask) => {
+export const updateTask = async (
+  id: number,
+  data: IUpdateTask & { checked: boolean }
+) => {
   const {
     languageId,
     languageLevelId,

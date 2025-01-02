@@ -65,7 +65,9 @@ export const taskSchema = z.object({
   taskPurposeId: z.number().int().positive(),
   taskTopicId: z.number().int().positive().nullable(),
   grammarRuleId: z.number().int().positive().nullable(),
+  checked: z.boolean(),
   data: taskDataScheme,
 });
 
 export type ITaskData = z.infer<typeof taskDataScheme>;
+export type ITask = z.infer<typeof taskSchema>;

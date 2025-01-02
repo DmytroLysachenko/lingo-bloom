@@ -7,11 +7,9 @@ export function apiMiddleware(
 ) {
   return async (req: NextRequest) => {
     try {
-      // Call the actual handler
       return await handler(req);
     } catch (error) {
       if (error instanceof ZodError) {
-        // Handle Zod validation errors
         return NextResponse.json(
           {
             message: "Validation failed",
@@ -25,17 +23,13 @@ export function apiMiddleware(
       }
 
       if (error instanceof ApiError) {
-        // Handle custom API errors
         return NextResponse.json(
           { message: error.message },
           { status: error.status }
         );
       }
 
-      // Log other errors for debugging
       console.error("Unhandled error:", error);
-
-      // Handle generic/unexpected errors (default to 500)
       return NextResponse.json(
         { message: "An unexpected error occurred" },
         { status: 500 }

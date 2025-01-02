@@ -93,6 +93,7 @@ model TaskType {
   name          String      @unique 
   promptPurpose String?
   promptSchema  Json?
+  promptExample Json?
   taskPurposeId Int
   taskPurpose   TaskPurpose @relation(fields: [taskPurposeId], references: [id], onDelete: Cascade)
   tasks         Task[]

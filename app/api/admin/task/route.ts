@@ -10,10 +10,11 @@ import { ApiError } from "@/lib/utils";
 import {
   createTaskSchema,
   deleteTaskSchema,
-  taskDataScheme,
+  tasksDataArrayScheme,
   updateTaskSchema,
 } from "@/schemas";
 import { apiMiddleware } from "@components/providers/apiMiddleware";
+import { Task } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 
 export const POST = apiMiddleware(async (request: NextRequest) => {
@@ -28,6 +29,7 @@ export const POST = apiMiddleware(async (request: NextRequest) => {
     taskTypeId,
     taskPurposeId,
     grammarRuleId,
+    quantity,
   } = parsedBody;
 
   const [language, languageLevel, taskType, taskPurpose] = await Promise.all([
@@ -105,34 +107,42 @@ export const POST = apiMiddleware(async (request: NextRequest) => {
     taskTopic,
     taskType,
     grammarRule: grammarRule?.data.en,
+    quantity,
   });
-
+  // console.log(data);
   if (!data)
     throw new ApiError(
       `Something went wrong during rule generation, try again later.`,
       500
     );
 
-  const parsedData = taskDataScheme.parse(JSON.parse(data));
+  const parsedData = tasksDataArrayScheme.parse(JSON.parse(data));
+  const newTasks: Task[] = [];
 
-  console.log(data, parsedData);
+  const createFewTasks = async () => {
+    for (const taskData of parsedData) {
+      const newTask = await createTask({
+        languageId,
+        languageLevelId,
+        taskPurposeId,
+        taskTypeId,
+        taskTopicId: taskTopicId ?? null,
+        grammarRuleId: grammarRuleId ?? null,
+        data: taskData,
+      }).catch(() => {
+        throw new ApiError("Database error while creating task.", 500);
+      });
 
-  const newTask = await createTask({
-    languageId,
-    languageLevelId,
-    taskPurposeId,
-    taskTypeId,
-    taskTopicId: taskTopicId ?? null,
-    grammarRuleId: grammarRuleId ?? null,
-    data: parsedData,
-  }).catch(() => {
-    throw new ApiError("Database error while creating task.", 500);
-  });
+      newTasks.push(newTask);
+    }
+  };
 
+  await createFewTasks();
+  console.log(newTasks);
   return NextResponse.json(
     {
       message: `Successfully created new task for ${language.name} language.`,
-      newTask,
+      newTasks,
     },
     { status: 200 }
   );

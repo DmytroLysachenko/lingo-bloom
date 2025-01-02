@@ -7,6 +7,7 @@ export const createTaskSchema = z.object({
   taskPurposeId: z.number().int().positive(),
   taskTopicId: z.number().int().positive().optional(),
   grammarRuleId: z.number().int().positive().optional(),
+  quantity: z.number().int().positive(),
 });
 
 export const testTaskDataSchema = z.object({
@@ -49,6 +50,8 @@ export const taskDataScheme = z.union([
   connectionTaskDataScheme,
   fillInBlankTaskDataScheme,
 ]);
+
+export const tasksDataArrayScheme = z.array(taskDataScheme);
 
 export const updateTaskSchema = z.object({
   id: z.number().int().positive(),

@@ -9,6 +9,7 @@ interface GenerateTaskParams {
   taskType: TaskType;
   grammarRule?: GrammarRuleTranslation;
   taskTopic?: TaskTopic | null;
+  quantity: number;
 }
 
 export const openai = new OpenAI({
@@ -53,15 +54,17 @@ export const generateTask = async ({
   taskType,
   grammarRule,
   taskTopic,
+  quantity,
 }: GenerateTaskParams) => {
   const prompt = generateTaskPrompt({
     language: language.name,
     languageLevel: languageLevel.name,
+    quantity,
     taskType,
     grammarRule,
     taskTopic: taskTopic?.name || undefined,
   });
-
+  console.log(prompt);
   const response = await openai.chat.completions.create({
     model: "gpt-4o-mini",
     messages: [
@@ -75,7 +78,7 @@ export const generateTask = async ({
       },
     ],
   });
-
+  console.log(response.usage);
   return response.choices[0].message
     .content!.replaceAll("```json", "")
     .replaceAll("`", "");

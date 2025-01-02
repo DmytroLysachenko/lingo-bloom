@@ -94,6 +94,7 @@ model TaskType {
   promptPurpose String?
   promptSchema  Json?
   promptExample Json?
+  promptComments String[]
   taskPurposeId Int
   taskPurpose   TaskPurpose @relation(fields: [taskPurposeId], references: [id], onDelete: Cascade)
   tasks         Task[]

@@ -5,6 +5,7 @@ interface GenerateTaskPromptParams {
   language: string;
   languageLevel: string;
   taskType: TaskType;
+  quantity: number;
   taskTopic?: string;
   grammarRule?: GrammarRuleTranslation;
 }
@@ -50,8 +51,11 @@ export const generateTaskPrompt = ({
   taskType,
   taskTopic,
   grammarRule,
+  quantity,
 }: GenerateTaskPromptParams) => `
-Generate a ${taskType.name} task for ${languageLevel} learners of ${language}. 
+Generate ${quantity} ${
+  taskType.name
+} tasks for ${languageLevel} learners of ${language}. 
 
 Details for the task:
 
@@ -77,5 +81,6 @@ Additional Guidelines:
 1. Write in **${language}** only.
 2. Follow the JSON schema strictly.
 3. Do not add extra text or comments.
-4. If applicable correct answer should be included in list of answers.
+4. Reply should be an array of objects.
+${taskType.promptComments.join("; ")}
 `;

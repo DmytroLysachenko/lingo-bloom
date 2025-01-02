@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { GrammarRule } from "@/types";
 import FormSelector from "@components/molecules/FormSelector";
 import axios from "axios";
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import {
   Language,
   LanguageLevel,
@@ -13,7 +13,7 @@ import {
   TaskTopic,
   TaskType,
 } from "@prisma/client";
-import { TaskData } from "@/schemas";
+import { Task } from "@/schemas";
 
 interface TaskFormData {
   languageId: string;
@@ -22,6 +22,7 @@ interface TaskFormData {
   taskPurposeId: string;
   taskTopicId?: string;
   grammarRuleId?: string;
+  quantity: string;
 }
 
 interface TaskFormProps {
@@ -48,17 +49,7 @@ const TaskForm = ({
     formState: { errors },
   } = useForm<TaskFormData>();
 
-  const [generatedTask, setGeneratedTask] = useState<{
-    id: number;
-    checked: boolean;
-    languageId: number;
-    languageLevelId: number;
-    taskTypeId: number;
-    taskPurposeId: number;
-    taskTopicId?: number;
-    grammarRuleId?: number;
-    data: TaskData;
-  }>();
+  const [generatedTasks, setGeneratedTasks] = useState<Task[]>([]);
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -106,6 +97,12 @@ const TaskForm = ({
       };
     });
 
+  const quantityOptions = [
+    { value: "3", name: "3" },
+    { value: "6", name: "6" },
+    { value: "9", name: "9" },
+  ];
+
   const onSubmit = async (data: TaskFormData) => {
     const numericData = {
       languageId: Number(data.languageId),
@@ -116,11 +113,13 @@ const TaskForm = ({
       grammarRuleId: data.grammarRuleId
         ? Number(data.grammarRuleId)
         : undefined,
+      quantity: Number(data.quantity),
     };
     try {
       setIsLoading(true);
       const response = await axios.post("/api/admin/task", numericData);
-      setGeneratedTask(response.data.newTask);
+      console.log(response);
+      setGeneratedTasks(response.data.newTasks);
     } catch (error) {
       console.error(error);
     } finally {
@@ -128,13 +127,16 @@ const TaskForm = ({
     }
   };
 
-  const onAcceptTask = async () => {
+  const onAcceptTask = async (id: number) => {
     try {
+      const acceptedTask = generatedTasks.find((task) => task.id === id);
+
       await axios.patch("/api/admin/task", {
-        ...generatedTask,
+        ...acceptedTask,
         checked: true,
       });
-      setGeneratedTask(undefined);
+
+      setGeneratedTasks(generatedTasks.filter((task) => task.id !== id));
     } catch (error) {
       console.error(error);
     } finally {
@@ -142,12 +144,12 @@ const TaskForm = ({
     }
   };
 
-  const onDeleteTask = async () => {
+  const onDeleteTask = async (id: number) => {
     try {
       await axios.delete("/api/admin/task", {
-        data: { id: generatedTask?.id },
+        data: { id },
       });
-      setGeneratedTask(undefined);
+      setGeneratedTasks(generatedTasks.filter((task) => task.id !== id));
     } catch (error) {
       console.error(error);
     } finally {
@@ -168,6 +170,14 @@ const TaskForm = ({
           errors={errors}
           options={languageOptions}
           placeholder="Select a language"
+        />
+        <FormSelector
+          id="quantity"
+          label="Quantity"
+          control={control}
+          errors={errors}
+          options={quantityOptions}
+          placeholder="Select quantity"
         />
 
         <FormSelector
@@ -229,22 +239,24 @@ const TaskForm = ({
           Create Task
         </Button>
       </form>
-      {generatedTask ? (
-        <>
-          <h2 className="text-2xl font-semibold my-5">Created Task:</h2>
-          <div className="text-xl block bg-primary-200 border border-solid border-neutral-600 rounded-xl p-4">
-            {Object.entries(generatedTask.data).map(([key, value]) => (
-              <p key={key}>
-                {key}: {JSON.stringify(value)}
-              </p>
-            ))}
-          </div>
-          <div className="flex justify-between p-2">
-            <Button onClick={onAcceptTask}>Accept</Button>
-            <Button onClick={onDeleteTask}>Delete</Button>
-          </div>
-        </>
-      ) : null}
+      {generatedTasks.length > 0
+        ? generatedTasks.map((task) => (
+            <Fragment key={task.id}>
+              <h2 className="text-2xl font-semibold my-5">Created Task:</h2>
+              <div className="text-xl block bg-primary-200 border border-solid border-neutral-600 rounded-xl p-4">
+                {Object.entries(task.data).map(([key, value]) => (
+                  <p key={key}>
+                    {key}: {JSON.stringify(value)}
+                  </p>
+                ))}
+              </div>
+              <div className="flex justify-between p-2">
+                <Button onClick={() => onAcceptTask(task.id)}>Accept</Button>
+                <Button onClick={() => onDeleteTask(task.id)}>Delete</Button>
+              </div>
+            </Fragment>
+          ))
+        : null}
     </div>
   );
 };

@@ -33,3 +33,6 @@ export const updateGrammarRuleSchema = z.object({
 export const deleteGrammarRuleSchema = z.object({
   id: z.number().positive("id must be a positive number"),
 });
+
+export type GrammarRuleData = z.infer<typeof grammarRuleDataSchema>;
+export type GrammarRule = z.infer<typeof grammarRuleSchema>;

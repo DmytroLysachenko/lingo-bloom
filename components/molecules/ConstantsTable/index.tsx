@@ -11,39 +11,29 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
+import {
+  Language,
+  LanguageLevel,
+  TaskPurpose,
+  TaskTopic,
+  TaskType,
+} from "@prisma/client";
 
+interface ConstantsTableProps {
+  mockData: {
+    taskTopics: TaskTopic[];
+    languageLevels: LanguageLevel[];
+    languages: Language[];
+    taskPurposes: TaskPurpose[];
+    taskTypes: TaskType[];
+  };
+}
 interface ConstantData {
   id: number;
   name: string;
 }
 
-const mockData = {
-  taskTypes: [
-    { id: 1, name: "Multiple Choice" },
-    { id: 2, name: "Fill in the Blank" },
-    { id: 3, name: "Matching" },
-  ],
-  languages: [
-    { id: 1, name: "English" },
-    { id: 2, name: "Polish" },
-    { id: 3, name: "Ukrainian" },
-  ],
-  languageLevels: [
-    { id: 1, name: "A1" },
-    { id: 2, name: "A2" },
-    { id: 3, name: "B1" },
-    { id: 4, name: "B2" },
-    { id: 5, name: "C1" },
-    { id: 6, name: "C2" },
-  ],
-  taskTopics: [
-    { id: 1, name: "Travel" },
-    { id: 2, name: "Business" },
-    { id: 3, name: "Medicine" },
-  ],
-};
-
-const ConstantsTable = () => {
+const ConstantsTable = ({ mockData }: ConstantsTableProps) => {
   const [activeTable, setActiveTable] =
     useState<keyof typeof mockData>("taskTypes");
 
@@ -52,15 +42,17 @@ const ConstantsTable = () => {
       <TableCaption>List of {activeTable}</TableCaption>
       <TableHeader>
         <TableRow>
-          <TableHead>ID</TableHead>
-          <TableHead>Name</TableHead>
+          {Object.keys(data[0]).map((key) => (
+            <TableHead key={key}>{key}</TableHead>
+          ))}
         </TableRow>
       </TableHeader>
       <TableBody>
         {data.map((item) => (
           <TableRow key={item.id}>
-            <TableCell>{item.id}</TableCell>
-            <TableCell>{item.name}</TableCell>
+            {Object.values(item).map((value, index) => (
+              <TableCell key={value + index}>{JSON.stringify(value)}</TableCell>
+            ))}
           </TableRow>
         ))}
       </TableBody>

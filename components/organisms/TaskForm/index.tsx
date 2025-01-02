@@ -2,18 +2,18 @@
 
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
+import { GrammarRule } from "@/types";
+import FormSelector from "@components/molecules/FormSelector";
+import axios from "axios";
+import { useState } from "react";
 import {
-  GrammarRule,
   Language,
   LanguageLevel,
   TaskPurpose,
   TaskTopic,
   TaskType,
-} from "@/types";
-import FormSelector from "@components/molecules/FormSelector";
-import axios from "axios";
-import { useState } from "react";
-import { ITaskData } from "@/schemas";
+} from "@prisma/client";
+import { TaskData } from "@/schemas";
 
 interface TaskFormData {
   languageId: string;
@@ -57,7 +57,7 @@ const TaskForm = ({
     taskPurposeId: number;
     taskTopicId?: number;
     grammarRuleId?: number;
-    data: ITaskData;
+    data: TaskData;
   }>();
 
   const [isLoading, setIsLoading] = useState(false);

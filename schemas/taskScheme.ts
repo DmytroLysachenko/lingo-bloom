@@ -15,6 +15,13 @@ export const testTaskDataSchema = z.object({
   correctAnswer: z.string(),
 });
 
+export const testTextTaskDataSchema = z.object({
+  text: z.string(),
+  question: z.string(),
+  answers: z.array(z.string()),
+  correctAnswer: z.string(),
+});
+
 export const connectionTaskDataScheme = z.object({
   columnA: z.array(z.string()),
   columnB: z.array(z.string()),
@@ -37,6 +44,7 @@ export const fillInBlankTaskDataScheme = z.object({
 });
 
 export const taskDataScheme = z.union([
+  testTextTaskDataSchema,
   testTaskDataSchema,
   connectionTaskDataScheme,
   fillInBlankTaskDataScheme,
@@ -50,6 +58,7 @@ export const updateTaskSchema = z.object({
   taskPurposeId: z.number().int().positive().optional(),
   taskTopicId: z.number().int().positive().optional().nullable(),
   grammarRuleId: z.number().int().positive().optional().nullable(),
+  checked: z.boolean().optional(),
   data: taskDataScheme,
 });
 
@@ -69,5 +78,6 @@ export const taskSchema = z.object({
   data: taskDataScheme,
 });
 
-export type ITaskData = z.infer<typeof taskDataScheme>;
-export type ITask = z.infer<typeof taskSchema>;
+export type TaskData = z.infer<typeof taskDataScheme>;
+export type Task = z.infer<typeof taskSchema>;
+export type UpdateTask = z.infer<typeof updateTaskSchema>;

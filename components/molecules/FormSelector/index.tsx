@@ -38,7 +38,6 @@ const FormSelector = <T extends FieldValues>({
       <Controller
         name={id}
         control={control}
-        rules={{ required: `${label} is required` }}
         render={({ field }) => (
           <Select
             onValueChange={field.onChange}

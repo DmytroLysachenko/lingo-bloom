@@ -76,12 +76,6 @@ export const generateTask = async ({
     ],
   });
 
-  console.log(
-    response.choices[0].message
-      .content!.replaceAll("```json", "")
-      .replaceAll("`", "")
-  );
-
   return response.choices[0].message
     .content!.replaceAll("```json", "")
     .replaceAll("`", "");

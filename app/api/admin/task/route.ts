@@ -115,6 +115,8 @@ export const POST = apiMiddleware(async (request: NextRequest) => {
 
   const parsedData = taskDataScheme.parse(JSON.parse(data));
 
+  console.log(data, parsedData);
+
   const newTask = await createTask({
     languageId,
     languageLevelId,
@@ -147,9 +149,11 @@ export const PATCH = apiMiddleware(async (request: NextRequest) => {
     throw new ApiError(`There is no task with such id: ${parsedBody.id}`, 404);
 
   const updatedTask = await updateTask(parsedBody.id, {
+    ...task,
     ...parsedBody,
-    checked: true,
   });
+
+  console.log(updatedTask);
 
   return NextResponse.json(
     { message: "Successfully updated new task.", updatedTask },

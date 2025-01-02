@@ -1,5 +1,5 @@
 // src/db/task.ts
-import { ITaskData } from "@/schemas";
+import { TaskData, UpdateTask } from "@/schemas";
 import { prisma } from "./prisma";
 
 interface ICreateTask {
@@ -9,19 +9,9 @@ interface ICreateTask {
   taskTypeId: number;
   taskTopicId?: number | null;
   grammarRuleId?: number | null;
-  data: ITaskData;
+  data: TaskData;
 }
 
-interface IUpdateTask {
-  id: number;
-  languageId?: number;
-  languageLevelId?: number;
-  taskTypeId?: number;
-  taskPurposeId?: number;
-  taskTopicId?: number | null;
-  grammarRuleId?: number | null;
-  data?: ITaskData;
-}
 export const findAllTasks = async () => {
   return prisma.task.findMany();
 };
@@ -66,10 +56,7 @@ export const createTask = async (data: ICreateTask) => {
   });
 };
 
-export const updateTask = async (
-  id: number,
-  data: IUpdateTask & { checked: boolean }
-) => {
+export const updateTask = async (id: number, newTask: UpdateTask) => {
   const {
     languageId,
     languageLevelId,
@@ -77,14 +64,15 @@ export const updateTask = async (
     taskTypeId,
     taskTopicId,
     grammarRuleId,
-    data: jsonData,
-  } = data;
+    checked,
+    data,
+  } = newTask;
 
   return prisma.task.update({
     where: { id },
     data: {
       language: {
-        connect: { id: languageId }, // Ensures the Language exists
+        connect: { id: languageId },
       },
       languageLevel: {
         connect: { id: languageLevelId },
@@ -99,7 +87,8 @@ export const updateTask = async (
       grammarRule: grammarRuleId
         ? { connect: { id: grammarRuleId } }
         : undefined,
-      data: jsonData,
+      data,
+      checked,
     },
   });
 };

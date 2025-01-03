@@ -138,7 +138,7 @@ export const POST = apiMiddleware(async (request: NextRequest) => {
   };
 
   await createFewTasks();
-  console.log(newTasks);
+  // console.log(newTasks);
   return NextResponse.json(
     {
       message: `Successfully created new task for ${language.name} language.`,
@@ -163,7 +163,7 @@ export const PATCH = apiMiddleware(async (request: NextRequest) => {
     ...parsedBody,
   });
 
-  console.log(updatedTask);
+  // console.log(updatedTask);
 
   return NextResponse.json(
     { message: "Successfully updated new task.", updatedTask },

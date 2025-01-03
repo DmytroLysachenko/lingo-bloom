@@ -17,8 +17,11 @@ export const openai = new OpenAI({
   project: process.env.OPENAI_PROJECT_ID,
 });
 
-const developerMessage =
-  "You are an assistant for generating structured JSON data for language learning tasks. Always return a valid JSON object that follows the specified schema, without any additional text, explanation, or formatting. Your output should strictly adhere to the JSON format provided.";
+const systemTaskMessage =
+  "You are an assistant for generating structured JSON data for language learning tasks. Always return a valid JSON object that follows the specified schema, without any additional text, explanation, or formatting. Your output should strictly adhere to the JSON scheme format provided.";
+
+const systemGrammarRuleMessage =
+  "You are an assistant for generating structured JSON data with grammar rules for language learning. Always return a valid JSON object that follows the specified schema, without any additional text, explanation, or formatting. Your output should strictly adhere to the JSON format scheme provided.";
 
 //Grammar rules
 
@@ -32,9 +35,8 @@ export const generateGrammarRule = async (
     model: "gpt-4o-mini",
     messages: [
       {
-        role: "developer",
-        content:
-          "You are an assistant for generating JSON data. Always return a valid JSON object, without any additional text, explanation, or formatting.",
+        role: "system",
+        content: systemGrammarRuleMessage,
       },
       {
         role: "user",
@@ -42,7 +44,7 @@ export const generateGrammarRule = async (
       },
     ],
   });
-
+  console.log(response.usage);
   return response.choices[0].message
     .content!.replaceAll("```json", "")
     .replaceAll("`", "");
@@ -70,7 +72,7 @@ export const generateTask = async ({
     messages: [
       {
         role: "developer",
-        content: developerMessage,
+        content: systemTaskMessage,
       },
       {
         role: "user",

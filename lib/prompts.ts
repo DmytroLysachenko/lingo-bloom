@@ -21,28 +21,26 @@ export const generateGrammarRulePrompt = (
   {
       "en": {
           "title": "Detailed grammar rule name in English",
-          "description": "Comprehensive and detailed explanation in English, suitable for non-native speakers.",
-          "example": "Examples in ${language} language, with English comments only when needed to explain context or clarify usage."
+          "description": "Provide a comprehensive explanation in English that includes the specific usage of the grammar rule, real-life use cases, common mistakes, and exceptions. The explanation should be clear for non-native speakers and must include guidance on how to apply the rule in different contexts (e.g., singular/plural, tense, mood).",
+          "example": "Provide examples in ${language} language, including both singular and plural forms (if applicable), and different cases, tenses, or moods. Use English comments only when necessary to clarify context or usage."
       },
       "pl": {
           "title": "Detailed grammar rule name in Polish",
-          "description": "Comprehensive and detailed explanation in Polish, suitable for non-native speakers.",
-          "example": "Examples in ${language} language with Polish comments only when needed to explain context or clarify usage."
+          "description": "Provide a comprehensive explanation in Polish that includes the specific usage of the grammar rule, real-life use cases, common mistakes, and exceptions. The explanation should be clear for non-native speakers and must include guidance on how to apply the rule in different contexts (e.g., singular/plural, tense, mood).",
+          "example": "Provide examples in ${language} language, including both singular and plural forms (if applicable), and different cases, tenses, or moods. Use Polish comments only when necessary to clarify context or usage."
       },
       "uk": {
           "title": "Detailed grammar rule name in Ukrainian",
-          "description": "Comprehensive and detailed explanation in Ukrainian, suitable for non-native speakers.",
-          "example": "Examples in ${language} language with Ukrainian comments only when needed to explain context or clarify usage."
+          "description": "Provide a comprehensive explanation in Ukrainian that includes the specific usage of the grammar rule, real-life use cases, common mistakes, and exceptions. The explanation should be clear for non-native speakers and must include guidance on how to apply the rule in different contexts (e.g., singular/plural, tense, mood).",
+          "example": "Provide examples in ${language} language, including both singular and plural forms (if applicable), and different cases, tenses, or moods. Use Ukrainian comments only when necessary to clarify context or usage."
       }
   }
 
   Ensure the following:
-  - The response must be **valid JSON**.
   - Examples must be in ${language}.
   - The rule must not repeat titles in this list: ${JSON.stringify(
     existingTitles
   )}.
-  - Do not include any additional text outside of the JSON object.
 `;
 
 export const generateTaskPrompt = ({
@@ -76,11 +74,12 @@ ${JSON.stringify(taskType.promptSchema)}
 Task examples: 
 ${JSON.stringify(taskType.promptExample)}
 
+**Important** task-specific Guidelines:
+${taskType.promptComments.join("; ")}
 
 Additional Guidelines:
 1. Write in **${language}** only.
 2. Follow the JSON schema strictly.
 3. Do not add extra text or comments.
 4. Reply should be an array of objects.
-${taskType.promptComments.join("; ")}
 `;

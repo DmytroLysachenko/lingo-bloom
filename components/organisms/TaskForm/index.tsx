@@ -245,7 +245,10 @@ const TaskForm = ({
               <h2 className="text-2xl font-semibold my-5">Created Task:</h2>
               <div className="text-xl block bg-primary-200 border border-solid border-neutral-600 rounded-xl p-4">
                 {Object.entries(task.data).map(([key, value]) => (
-                  <p key={key}>
+                  <p
+                    key={key}
+                    className="my-2"
+                  >
                     {key}: {JSON.stringify(value)}
                   </p>
                 ))}

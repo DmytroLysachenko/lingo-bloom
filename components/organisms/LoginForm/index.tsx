@@ -29,15 +29,15 @@ const LoginForm = () => {
     formState: { errors },
   } = useForm<FormData>();
 
-  const onSubmit = (data: FormData) => {
+  const onSubmit = async (data: FormData) => {
     try {
-      signIn("credentials", {
+      await signIn("credentials", {
         email: data.email,
         password: data.password,
         redirectTo: "/dashboard",
       });
     } catch (error) {
-      console.log(error);
+      console.error("Sign-in error:", error);
     }
   };
 

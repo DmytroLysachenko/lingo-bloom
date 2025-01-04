@@ -32,11 +32,14 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           throw new Error("Invalid email or password");
         }
 
-        if (user.password === null)
-          throw new Error(
-            "This mail is registered through OAuth, try log in with google/github"
-          );
-
+        if (user.password === null) {
+          // Custom error for OAuth users
+          const error = new Error("OAuthAccount");
+          error.name = "OAuthAccount"; // Custom key
+          console.error(error);
+          throw error;
+        }
+        //  "This mail is registered through OAuth, try log in with google/github";
         // Compare password with hashed password
         const isPasswordValid = await bcrypt.compare(
           credentials.password as string,

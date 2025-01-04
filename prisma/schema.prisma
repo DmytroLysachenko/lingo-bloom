@@ -18,7 +18,6 @@ model User {
   password      String?
   accounts      Account[]
   sessions      Session[]
-
   createdAt    DateTime       @default(now())
   updatedAt    DateTime       @updatedAt
   Test         Test[]

@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 
 import axios from "axios";
-import FormSelector from "@components/molecules/FormSelector";
+import FormSelector from "@atoms/FormSelector";
 import { Language, LanguageLevel } from "@prisma/client";
 
 interface FormData {

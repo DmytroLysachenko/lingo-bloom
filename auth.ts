@@ -33,11 +33,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         }
 
         if (user.password === null) {
-          // Custom error for OAuth users
-          const error = new Error("OAuthAccount");
-          error.name = "OAuthAccount"; // Custom key
-          console.error(error);
-          throw error;
+          return null;
         }
         //  "This mail is registered through OAuth, try log in with google/github";
         // Compare password with hashed password
@@ -80,5 +76,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   },
   pages: {
     error: "/auth-error",
+    signIn: "/login",
   },
 });

@@ -44,10 +44,8 @@ export async function middleware(req: NextRequest) {
     if (!isAuthorized(pathname, role, accessRules.api)) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-  } else {
-    if (!isAuthorized(pathname, role, accessRules.frontend)) {
-      return NextResponse.redirect(loginUrl);
-    }
+  } else if (!isAuthorized(pathname, role, accessRules.frontend)) {
+    return NextResponse.redirect(loginUrl);
   }
 
   return NextResponse.next();

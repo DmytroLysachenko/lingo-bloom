@@ -1,33 +1,58 @@
 "use client";
 
-import { useState } from "react";
 import { useForm } from "react-hook-form";
-import {
-  Eye,
-  EyeOff,
-  Mail,
-  Lock,
-  Github,
-  ChromeIcon as Google,
-} from "lucide-react";
+import { Mail, Github, ChromeIcon as Google } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import { signIn } from "next-auth/react";
+import { useSearchParams } from "next/navigation";
+import HidableInput from "@atoms/HidableInput";
+import InputWithIcon from "@atoms/InputWithIcon";
 
-type FormData = {
+interface FormData {
   email: string;
   password: string;
+}
+
+enum Error {
+  Configuration = "Configuration",
+  CredentialsSignin = "CredentialsSignin",
+  Unknown = "Unknown",
+}
+
+const errorMap = {
+  [Error.Configuration]: (
+    <p>
+      There was a problem when trying to authenticate. Please contact us if this
+      error persists. Unique error code:{" "}
+      <code className="rounded-sm bg-primary-100 p-1 text-xs font-mono">
+        Configuration
+      </code>
+    </p>
+  ),
+  [Error.CredentialsSignin]: (
+    <p>
+      This mail is already registered through OAuth, try to log in with
+      google/github
+    </p>
+  ),
+  [Error.Unknown]: (
+    <p>
+      An unknown error occurred. Please contact support if this problem
+      persists.
+    </p>
+  ),
 };
 
 const LoginForm = () => {
-  const [showPassword, setShowPassword] = useState(false);
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<FormData>();
+
+  const search = useSearchParams();
+  const error = search.get("error") as Error;
 
   const onSubmit = async (data: FormData) => {
     try {
@@ -54,74 +79,37 @@ const LoginForm = () => {
         onSubmit={handleSubmit(onSubmit)}
         className="space-y-4"
       >
-        <div className="space-y-2">
-          <Label
-            htmlFor="email"
-            className="text-primary-700"
-          >
-            Email
-          </Label>
-          <div className="relative">
-            <Input
-              id="email"
-              type="email"
-              placeholder="Enter your email"
-              {...register("email", {
-                required: "Email is required",
-                pattern: {
-                  value: /\S+@\S+\.\S+/,
-                  message: "Invalid email address",
-                },
-              })}
-              className="pl-10 border-primary-200 focus:border-primary-500 focus:ring-primary-500"
-            />
-            <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-primary-400 h-5 w-5" />
-          </div>
-          {errors.email && (
-            <p className="text-destructive text-sm">{errors.email.message}</p>
-          )}
-        </div>
+        <InputWithIcon
+          id="email"
+          label="Email"
+          type="email"
+          placeholder="Enter your email"
+          icon={Mail}
+          register={register}
+          errors={errors}
+          validation={{
+            required: "Email is required",
+            pattern: {
+              value: /\S+@\S+\.\S+/,
+              message: "Invalid email address",
+            },
+          }}
+        />
 
-        <div className="space-y-2">
-          <Label
-            htmlFor="password"
-            className="text-primary-700"
-          >
-            Password
-          </Label>
-          <div className="relative">
-            <Input
-              id="password"
-              type={showPassword ? "text" : "password"}
-              placeholder="Enter your password"
-              {...register("password", {
-                required: "Password is required",
-                minLength: {
-                  value: 8,
-                  message: "Password must be at least 8 characters",
-                },
-              })}
-              className="pl-10 pr-10 border-primary-200 focus:border-primary-500 focus:ring-primary-500"
-            />
-            <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-primary-400 h-5 w-5" />
-            <button
-              type="button"
-              onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-primary-400"
-            >
-              {showPassword ? (
-                <EyeOff className="h-5 w-5" />
-              ) : (
-                <Eye className="h-5 w-5" />
-              )}
-            </button>
-          </div>
-          {errors.password && (
-            <p className="text-destructive text-sm">
-              {errors.password.message}
-            </p>
-          )}
-        </div>
+        <HidableInput
+          id="password"
+          label="Password"
+          placeholder="Enter your password"
+          register={register}
+          errors={errors}
+          validation={{
+            required: "Password is required",
+            minLength: {
+              value: 8,
+              message: "Password must be at least 8 characters",
+            },
+          }}
+        />
 
         <Button
           type="submit"
@@ -129,8 +117,11 @@ const LoginForm = () => {
         >
           Log in
         </Button>
-      </form>
-
+      </form>{" "}
+      <div className="text-destructive mb-4">
+        {error &&
+          (errorMap[error] || "Please contact us if this error persists.")}
+      </div>
       <div className="relative">
         <div className="absolute inset-0 flex items-center">
           <span className="w-full border-t border-primary-200" />
@@ -141,7 +132,6 @@ const LoginForm = () => {
           </span>
         </div>
       </div>
-
       <div className="flex justify-center space-x-4">
         <Button
           variant="outline"
@@ -160,7 +150,6 @@ const LoginForm = () => {
           <Google className="h-5 w-5" />
         </Button>
       </div>
-
       <div className="text-center">
         <p className="text-sm text-primary-600">
           Don&apos;t have an account?{" "}

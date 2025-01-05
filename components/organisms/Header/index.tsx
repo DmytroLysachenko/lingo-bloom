@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 
 import LanguageSelector from "@molecules/LanguageSelector";
 import { auth } from "@/auth";
-import AuthButtons from "@components/molecules/AuthButtons";
+import AuthButtons from "@atoms/AuthButtons";
 
 const Header = async () => {
   const session = await auth();

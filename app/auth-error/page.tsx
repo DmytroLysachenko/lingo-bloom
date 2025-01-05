@@ -2,44 +2,48 @@
 
 import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
-
-enum Error {
-  Configuration = "Configuration",
-}
-
-const errorMap = {
-  [Error.Configuration]: (
-    <p>
-      There was a problem when trying to authenticate. Please contact us if this
-      error persists. Unique error code:{" "}
-      <code className="rounded-sm bg-slate-100 p-1 text-xs">Configuration</code>
-    </p>
-  ),
-};
+import { AlertTriangle } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 const ErrorContent = () => {
-  const search = useSearchParams();
-  const error = search.get("error") as Error;
-
   return (
-    <a
-      href="#"
-      className="block max-w-sm rounded-lg border border-gray-200 bg-white p-6 text-center shadow hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700"
-    >
-      <h5 className="mb-2 flex flex-row items-center justify-center gap-2 text-xl font-bold tracking-tight text-gray-900 dark:text-white">
-        Something went wrong
-      </h5>
-      <div className="font-normal text-gray-700 dark:text-gray-400">
-        {errorMap[error] || "Please contact us if this error persists."}
+    <div className="max-w-md w-full bg-white shadow-lg rounded-lg overflow-hidden">
+      <div className="bg-primary-500 p-4">
+        <h5 className="text-xl font-bold text-white flex items-center justify-center gap-2">
+          <AlertTriangle className="w-6 h-6" />
+          Authentication Error
+        </h5>
       </div>
-    </a>
+      <div className="p-6">
+        <div className="text-primary-700 mb-4">
+          <p>
+            An unknown error occurred. Please contact support if this problem
+            persists.
+          </p>
+        </div>
+        <div className="flex justify-center space-x-4">
+          <Button
+            asChild
+            variant="outline"
+          >
+            <Link href="/login">Try Again</Link>
+          </Button>
+          <Button asChild>
+            <Link href="/">Go to Homepage</Link>
+          </Button>
+        </div>
+      </div>
+    </div>
   );
 };
 
 const ErrorPage = () => {
   return (
-    <div className="flex h-screen w-full flex-col items-center justify-center">
-      <Suspense fallback={<p>Loading...</p>}>
+    <div className="flex min-h-screen w-full flex-col items-center justify-center bg-primary-50 px-4">
+      <Suspense
+        fallback={<div className="text-primary-700 text-lg">Loading...</div>}
+      >
         <ErrorContent />
       </Suspense>
     </div>

@@ -21,7 +21,6 @@ model User {
   createdAt    DateTime       @default(now())
   updatedAt    DateTime       @updatedAt
   Test         Test[]
-  TaskProgress TaskProgress[]
 }
 
 model Account {
@@ -128,31 +127,16 @@ model Task {
   grammarRuleId   Int?
   grammarRule     GrammarRule?   @relation(fields: [grammarRuleId], references: [id], onDelete: Cascade)
   data            Json // Store type-specific details as JSON
-  TaskProgress    TaskProgress[]
 }
 
 model Test {
   id          String    @id @default(cuid())
-  userId      String // Reference to the User model
+  userId      String    // Reference to the User model
   startedAt   DateTime  @default(now())
   completedAt DateTime?
-  status      String // 'in-progress' | 'completed'
-  totalTasks  Int // Total tasks in the test
-  progress    Float // Percentage completed (aggregated from tasks)
-  score       Float? // Aggregated score of the test
-  user        User      @relation(fields: [userId], references: [id])
-}
-
-model TaskProgress {
-  id          String    @id @default(cuid())
-  userId      String // Reference to the User model
-  taskId      Int // Reference to the Task model
-  status      String // 'not-started' | 'in-progress' | 'completed'
-  tries       Int       @default(0) // Number of attempts for this task
-  score       Float     @default(0) // Average score across attempts
-  completedAt DateTime?
+  status      String    // 'in-progress' | 'completed'
+  totalTasks  Int       // Total tasks in the test
+  progress    Float     // Percentage completed
+  tasks       Json      // Array of { id: taskId, completed: boolean }
   user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  task        Task      @relation(fields: [taskId], references: [id], onDelete: Cascade)
-
-  @@unique([userId, taskId]) // Ensure one record per user-task pair
 }

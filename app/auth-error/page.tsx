@@ -1,6 +1,5 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 import { AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";

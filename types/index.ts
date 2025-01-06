@@ -1,5 +1,3 @@
-import { JsonValue } from "@prisma/client/runtime/library";
-
 export interface Task {
   level: string;
   language: string;

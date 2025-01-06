@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button";
 import axios from "axios";
 import FormSelector from "@atoms/FormSelector";
 import { Language, LanguageLevel } from "@prisma/client";
+import { useSession } from "next-auth/react";
+import { useState } from "react";
 
 interface FormData {
   languageId: string;
@@ -28,6 +30,10 @@ const TestCreationForm = ({
     formState: { errors },
   } = useForm<FormData>();
 
+  const [isLoading, setIsLoading] = useState(false);
+
+  const session = useSession();
+
   const languageOptions = languages.map((language) => ({
     value: language.id.toString(),
     name: language.name,
@@ -39,8 +45,24 @@ const TestCreationForm = ({
   }));
 
   const onSubmit = async (data: FormData) => {
-    await axios.post("/api/test", data);
+    const numericData = {
+      languageId: Number(data.languageId),
+      languageLevelId: Number(data.languageLevelId),
+      quantity: Number(data.quantity),
+    };
+    try {
+      const response = await axios.post("/api/test", {
+        userId: session.data?.user.id,
+        ...numericData,
+      });
+      console.log(response.data);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
   };
+
   // Here you would typically send this data to your backend or state management
 
   return (
@@ -55,6 +77,7 @@ const TestCreationForm = ({
         errors={errors}
         options={languageOptions}
         placeholder="Select a language"
+        required
       />
 
       <FormSelector
@@ -64,6 +87,7 @@ const TestCreationForm = ({
         errors={errors}
         options={languageLevelsOptions}
         placeholder="Select a language level"
+        required
       />
 
       <FormSelector
@@ -77,9 +101,13 @@ const TestCreationForm = ({
           { value: "15", name: "15" },
         ]}
         placeholder="Select quantity of tasks"
+        required
       />
 
-      <Button className="w-full bg-secondary-500 hover:bg-secondary-600 text-white !mt-12">
+      <Button
+        className="w-full bg-secondary-500 hover:bg-secondary-600 text-white !mt-12"
+        disabled={isLoading}
+      >
         Generate Test
       </Button>
     </form>

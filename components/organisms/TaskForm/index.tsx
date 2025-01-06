@@ -170,6 +170,7 @@ const TaskForm = ({
           errors={errors}
           options={languageOptions}
           placeholder="Select a language"
+          required
         />
         <FormSelector
           id="quantity"
@@ -178,6 +179,7 @@ const TaskForm = ({
           errors={errors}
           options={quantityOptions}
           placeholder="Select quantity"
+          required
         />
 
         <FormSelector
@@ -187,6 +189,7 @@ const TaskForm = ({
           errors={errors}
           options={languageLevelsOptions}
           placeholder="Select a language level"
+          required
         />
 
         <FormSelector
@@ -206,6 +209,7 @@ const TaskForm = ({
             errors={errors}
             options={taskPurposeIdOptions}
             placeholder="Select a task purpose"
+            required
           />
         )}
 
@@ -217,6 +221,7 @@ const TaskForm = ({
             errors={errors}
             options={taskTypeIdOptions}
             placeholder="Select a task type"
+            required
           />
         )}
 
@@ -229,6 +234,7 @@ const TaskForm = ({
               errors={errors}
               options={grammarRulesOptions}
               placeholder="Select a grammar rule"
+              required
             />
           )}
 

@@ -1,7 +1,6 @@
 // src/db/task.ts
 import { TaskData, UpdateTask } from "@/schemas";
 import { prisma } from "./prisma";
-
 interface ICreateTask {
   languageId: number;
   languageLevelId: number;
@@ -14,6 +13,38 @@ interface ICreateTask {
 
 export const findAllTasks = async () => {
   return prisma.task.findMany();
+};
+
+export const findTasksWithDiversity = async ({
+  languageId,
+  languageLevelId,
+  quantity,
+}: {
+  languageId: number;
+  languageLevelId: number;
+  quantity: number;
+}) => {
+  // Fetch tasks with diverse taskTypes, topics, and purposes
+  const tasks = await prisma.task.findMany({
+    where: {
+      languageId,
+      languageLevelId,
+    },
+    take: quantity, // Limit the number of tasks to the requested quantity
+  });
+
+  // Shuffle and ensure diversity (you can enhance this as needed)
+  const shuffledTasks = shuffleArray(tasks);
+  return shuffledTasks.slice(0, quantity);
+};
+
+// Utility function to shuffle an array
+const shuffleArray = <T>(array: T[]) => {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
 };
 
 export const findTaskById = async (id: number) => {

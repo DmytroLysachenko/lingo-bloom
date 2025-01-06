@@ -15,21 +15,11 @@ interface FormData {
 }
 
 enum Error {
-  Configuration = "Configuration",
   CredentialsSignin = "CredentialsSignin",
   Unknown = "Unknown",
 }
 
 const errorMap = {
-  [Error.Configuration]: (
-    <p>
-      There was a problem when trying to authenticate. Please contact us if this
-      error persists. Unique error code:{" "}
-      <code className="rounded-sm bg-primary-100 p-1 text-xs font-mono">
-        Configuration
-      </code>
-    </p>
-  ),
   [Error.CredentialsSignin]: (
     <p>
       This mail is already registered through OAuth, try to log in with

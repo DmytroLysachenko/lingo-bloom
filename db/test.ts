@@ -4,10 +4,10 @@ import { prisma } from "./prisma";
 interface ITest {
   userId: string;
   completedAt?: Date;
-  status: "in-progress" | "completed";
+  status?: "in-progress" | "completed";
   totalTasks: number;
-  progress: number;
-  score?: number;
+  progress?: number;
+  tasks: { id: number }[];
 }
 
 export const findAllTests = async () => {
@@ -21,8 +21,18 @@ export const findTestById = async (id: string) => {
 };
 
 export const createTest = async (data: ITest) => {
+  const { userId, totalTasks, tasks } = data;
   return prisma.test.create({
-    data,
+    data: {
+      userId,
+      totalTasks,
+      status: "in-progress",
+      progress: 0,
+      tasks: tasks.map((task) => ({
+        taskId: task.id,
+        status: "in-progress",
+      })),
+    },
   });
 };
 

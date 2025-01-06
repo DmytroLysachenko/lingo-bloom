@@ -23,7 +23,9 @@ interface FormSelectorProps<T extends FieldValues> {
   errors: FieldErrors<T>;
   options: { value: string; name: string }[];
   placeholder: string;
+  required?: boolean;
 }
+
 const FormSelector = <T extends FieldValues>({
   id,
   label,
@@ -31,6 +33,7 @@ const FormSelector = <T extends FieldValues>({
   errors,
   options,
   placeholder,
+  required,
 }: FormSelectorProps<T>) => {
   return (
     <div className="space-y-2">
@@ -38,6 +41,7 @@ const FormSelector = <T extends FieldValues>({
       <Controller
         name={id}
         control={control}
+        rules={required ? { required: `${label} is required` } : undefined}
         render={({ field }) => (
           <Select
             onValueChange={field.onChange}

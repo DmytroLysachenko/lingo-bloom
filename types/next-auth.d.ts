@@ -4,10 +4,11 @@ declare module "next-auth" {
   interface Session {
     user: {
       id: string;
-      name?: string | null;
-      email?: string | null;
-      image?: string | null;
-      role?: string;
+      name: string;
+      email: string;
+      image: string;
+      role: string;
+      createdAt: Date;
     } & DefaultSession["user"];
   }
 
@@ -18,5 +19,6 @@ declare module "next-auth" {
   interface User {
     role?: string;
     password?: string | null;
+    createdAt?: Date;
   }
 }

@@ -2,10 +2,9 @@ export interface User {
   id: string;
   name: string;
   email: string;
-  emailVerified: null | Date;
   image: string;
-  createdAt: string;
-  updatedAt: string;
+  role: string;
+  createdAt: Date;
 }
 
 export interface TestProgress {

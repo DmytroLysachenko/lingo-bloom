@@ -1,49 +1,48 @@
-import UserTasksStats from "@components/organisms/UserTasksStats";
+// import UserTasksStats from "@components/organisms/UserTasksStats";
 import UserCompletedTests from "@components/organisms/UserCompletedTests";
 import UserCurrentTestProgress from "@components/organisms/UserCurrentTestProgress";
 import UserProfile from "@components/organisms/UserProfile";
-import { CompletedTest, TaskStats, TestProgress, User } from "@/types";
+// import { TaskStats } from "@/types";
+import { auth } from "@/auth";
+import { redirect } from "next/navigation";
+import { findAllTests } from "@/db/test";
+import { testArraySchema } from "@/schemas/testScheme";
 
-const DashboardPage = () => {
-  // In a real application, you would fetch this data from your API
-  const user: User = {
-    id: "cm4y1ge6x0000u6kof3muzu2k",
-    name: "Dmytro Lysachenko",
-    email: "dlysachenko98@gmail.com",
-    emailVerified: null,
-    image: "https://avatars.githubusercontent.com/u/157533371?v=4",
-    createdAt: "2024-12-21T10:30:33.944Z",
-    updatedAt: "2024-12-21T10:30:33.944Z",
-  };
+const DashboardPage = async () => {
+  const session = await auth();
 
-  const currentTestProgress: TestProgress = {
-    testId: "123",
-    progress: 60,
-    totalTasks: 10,
-    completedTasks: 6,
-  };
+  if (!session) return redirect("/login");
 
-  const completedTests: CompletedTest[] = [
-    { testId: "101", score: 85, completedAt: "2024-12-20" },
-    { testId: "102", score: 90, completedAt: "2024-12-18" },
-  ];
+  const tests = await findAllTests(session.user.id);
 
-  const taskStats: TaskStats = {
-    totalTasks: 500,
-    completedTasks: 350,
-    averageScore: 87.5,
-    triesPerTask: 1.3,
-  };
+  const parsedTests = testArraySchema.parse(tests);
+
+  const currentTest = parsedTests.find((test) => test.status === "in-progress");
+
+  const completedTests = parsedTests.filter(
+    (test) => test.status === "completed"
+  );
+
+  // const taskStats: TaskStats = {
+  //   totalTasks: 500,
+  //   completedTasks: completedTests.reduce(
+  //     (acc, test) => acc + test.totalTasks,
+  //     0
+  //   ),
+  //   averageScore:
+  //     completedTests.reduce((acc, test) => acc + Number(test.score), 0) /
+  //     completedTests.length,
+  // };
 
   return (
     <div className="container mx-auto px-4 py-8 min-h-[80vh] flex items-center justify-center">
       <div className="w-full">
         <h1 className="text-3xl font-bold text-primary-700 mb-8">Dashboard</h1>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <UserProfile user={user} />
-          <UserCurrentTestProgress progress={currentTestProgress} />
+          <UserProfile user={session.user} />
+          <UserCurrentTestProgress test={currentTest} />
           <UserCompletedTests tests={completedTests} />
-          <UserTasksStats stats={taskStats} />
+          {/* <UserTasksStats stats={taskStats} /> */}
         </div>
       </div>
     </div>

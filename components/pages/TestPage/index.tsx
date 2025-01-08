@@ -1,3 +1,5 @@
+"use client";
+
 import TestInterface from "@components/organisms/TestInteface";
 import { Task } from "@/schemas";
 import { Test } from "@/schemas/testScheme";

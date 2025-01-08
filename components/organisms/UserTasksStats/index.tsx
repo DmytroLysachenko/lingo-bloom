@@ -29,12 +29,6 @@ const UserTasksStats = ({ stats }: UserTasksStatsProps) => {
             {stats.averageScore.toFixed(1)}%
           </p>
         </div>
-        <div>
-          <p className="text-sm text-primary-600">Tries per Task</p>
-          <p className="text-xl font-semibold text-primary-700">
-            {stats.triesPerTask.toFixed(1)}
-          </p>
-        </div>
       </div>
     </div>
   );

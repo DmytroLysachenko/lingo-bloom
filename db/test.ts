@@ -10,8 +10,18 @@ interface ITest {
   tasks: { id: number }[];
 }
 
-export const findAllTests = async () => {
-  return prisma.test.findMany();
+export const findAllTests = async (userId: string) => {
+  return prisma.test.findMany({ where: { userId } });
+};
+
+export const findAllCompletedTests = async (userId: string) => {
+  return prisma.test.findMany({
+    where: { userId, completedAt: { not: null } },
+  });
+};
+
+export const findAllCurrentTests = async (userId: string) => {
+  return prisma.test.findMany({ where: { userId, status: "in-progress" } });
 };
 
 export const findTestById = async (testId: string, userId: string) => {

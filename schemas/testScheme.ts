@@ -15,6 +15,7 @@ export const testSchema = z.object({
   status: z.string(),
   totalTasks: z.number().int().positive(),
   progress: z.number(),
+  score: z.number().nullable(),
   tasks: z.array(
     z.object({
       status: z.string(),
@@ -23,4 +24,7 @@ export const testSchema = z.object({
   ),
 });
 
+export const testArraySchema = z.array(testSchema);
+
+export type TestArray = z.infer<typeof testArraySchema>;
 export type Test = z.infer<typeof testSchema>;

@@ -65,6 +65,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       if (user) {
         token.role = user.role; // Ensure user role is stored in the token
         token.userId = user.id;
+        token.createdAt = user.createdAt;
       }
       return token;
     },
@@ -72,6 +73,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       if (session.user) {
         session.user.role = token.role as string;
         session.user.id = token.userId as string;
+        session.user.createdAt = token.createdAt as Date;
       }
       return session;
     },

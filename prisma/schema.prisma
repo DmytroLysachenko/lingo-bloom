@@ -137,6 +137,7 @@ model Test {
   status      String    // 'in-progress' | 'completed'
   totalTasks  Int       // Total tasks in the test
   progress    Float     // Percentage completed
+  score       Int?      
   tasks       Json      // Array of { id: taskId, completed: boolean }
   user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

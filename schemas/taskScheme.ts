@@ -81,6 +81,31 @@ export const taskSchema = z.object({
   data: taskDataScheme,
 });
 
+export const taskArray = z.array(taskSchema);
+
+export type UpdateTask = z.infer<typeof updateTaskSchema>;
 export type TaskData = z.infer<typeof taskDataScheme>;
 export type Task = z.infer<typeof taskSchema>;
-export type UpdateTask = z.infer<typeof updateTaskSchema>;
+
+export type TaskWithSpecificData<T extends TaskData> = Omit<Task, "data"> & {
+  data: T;
+};
+
+export type TestTaskType = TaskWithSpecificData<
+  z.infer<typeof testTaskDataSchema>
+>;
+export type TestTextTaskType = TaskWithSpecificData<
+  z.infer<typeof testTextTaskDataSchema>
+>;
+export type ConnectionTaskType = TaskWithSpecificData<
+  z.infer<typeof connectionTaskDataScheme>
+>;
+export type FillInBlankTaskType = TaskWithSpecificData<
+  z.infer<typeof fillInBlankTaskDataScheme>
+>;
+
+export type SpecificTask =
+  | TestTaskType
+  | TestTextTaskType
+  | ConnectionTaskType
+  | FillInBlankTaskType;

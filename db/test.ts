@@ -14,9 +14,9 @@ export const findAllTests = async () => {
   return prisma.test.findMany();
 };
 
-export const findTestById = async (id: string) => {
+export const findTestById = async (testId: string, userId: string) => {
   return prisma.test.findUnique({
-    where: { id },
+    where: { id: testId, userId },
   });
 };
 

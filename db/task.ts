@@ -15,6 +15,16 @@ export const findAllTasks = async () => {
   return prisma.task.findMany();
 };
 
+export const findAllTasksByIdsArray = async (idArray: number[]) => {
+  return prisma.task.findMany({
+    where: {
+      id: {
+        in: idArray,
+      },
+    },
+  });
+};
+
 export const findTasksWithDiversity = async ({
   languageId,
   languageLevelId,

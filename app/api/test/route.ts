@@ -33,6 +33,7 @@ export const POST = apiMiddleware(async (request: NextRequest) => {
 
   const newTest = await createTest({ userId, totalTasks: tasks.length, tasks });
 
+  console.log(newTest);
   return NextResponse.json(
     {
       message: `Successfully created new test.`,

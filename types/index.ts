@@ -1,11 +1,3 @@
-export interface Task {
-  level: string;
-  language: string;
-  question: string;
-  answers: string[];
-  correctAnswer: string;
-}
-
 export interface User {
   id: string;
   name: string;

@@ -25,6 +25,7 @@ export const findAllCurrentTests = async (userId: string) => {
 };
 
 export const findTestById = async (testId: string, userId: string) => {
+  console.log("FETCH");
   return prisma.test.findUnique({
     where: { id: testId, userId },
   });

@@ -1,3 +1,4 @@
+"use client";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -5,10 +6,9 @@ import { ConnectionTaskType } from "@/schemas";
 
 interface ConnectionTaskProps {
   task: ConnectionTaskType;
-  onAnswer: (answer: { columnAIndex: number; columnBIndex: number }[]) => void;
 }
 
-const ConnectionTask = ({ task, onAnswer }: ConnectionTaskProps) => {
+const ConnectionTask = ({ task }: ConnectionTaskProps) => {
   const [connections, setConnections] = useState<
     { columnAIndex: number; columnBIndex: number }[]
   >([]);
@@ -28,9 +28,7 @@ const ConnectionTask = ({ task, onAnswer }: ConnectionTaskProps) => {
     }
   };
 
-  const handleSubmit = () => {
-    onAnswer(connections);
-  };
+  const handleSubmit = () => {};
 
   return (
     <div className="bg-white p-6 rounded-lg shadow-md">

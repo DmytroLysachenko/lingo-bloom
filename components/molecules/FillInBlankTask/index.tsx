@@ -1,3 +1,4 @@
+"use client";
 import { useState } from "react";
 
 import { Input } from "@/components/ui/input";
@@ -6,10 +7,9 @@ import { FillInBlankTaskType } from "@/schemas";
 
 interface FillInBlankTaskProps {
   task: FillInBlankTaskType;
-  onAnswer: (answer: string[]) => void;
 }
 
-const FillInBlankTask = ({ task, onAnswer }: FillInBlankTaskProps) => {
+const FillInBlankTask = ({ task }: FillInBlankTaskProps) => {
   const [answers, setAnswers] = useState<string[]>([]);
 
   const handleInputChange = (index: number, value: string) => {
@@ -18,9 +18,7 @@ const FillInBlankTask = ({ task, onAnswer }: FillInBlankTaskProps) => {
     setAnswers(newAnswers);
   };
 
-  const handleSubmit = () => {
-    onAnswer(answers);
-  };
+  const handleSubmit = () => {};
 
   const renderQuestion = () => {
     const parts = task.data.question.split("___");

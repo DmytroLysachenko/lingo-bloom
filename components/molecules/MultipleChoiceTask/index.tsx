@@ -1,3 +1,4 @@
+"use client";
 import { useState } from "react";
 
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -7,15 +8,13 @@ import { TestTaskType } from "@/schemas";
 
 interface MultipleChoiceTaskProps {
   task: TestTaskType;
-  onAnswer: (answer: string) => void;
 }
 
-const MultipleChoiceTask = ({ task, onAnswer }: MultipleChoiceTaskProps) => {
+const MultipleChoiceTask = ({ task }: MultipleChoiceTaskProps) => {
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
 
   const handleSubmit = () => {
     if (selectedAnswer) {
-      onAnswer(selectedAnswer);
     }
   };
 

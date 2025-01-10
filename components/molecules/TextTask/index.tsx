@@ -1,3 +1,4 @@
+"use client";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -7,15 +8,13 @@ import { TestTextTaskType } from "@/schemas";
 
 interface TextTaskProps {
   task: TestTextTaskType;
-  onAnswer: (answer: string) => void;
 }
 
-const TextTask = ({ task, onAnswer }: TextTaskProps) => {
+const TextTask = ({ task }: TextTaskProps) => {
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
 
   const handleSubmit = () => {
     if (selectedAnswer) {
-      onAnswer(selectedAnswer);
     }
   };
 

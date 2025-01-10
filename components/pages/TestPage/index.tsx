@@ -1,42 +1,49 @@
-"use client";
-
-import TestInterface from "@components/organisms/TestInteface";
+import TaskInterface from "@components/organisms/TaskInteface";
 import { Task } from "@/schemas";
 import { Test } from "@/schemas/testScheme";
-import React, { useState } from "react";
-
-interface TestPageProps {
+import React from "react";
+import { Button } from "@components/ui/button";
+import Form from "next/form";
+import { ArrowLeft, ArrowRight } from "lucide-react";
+interface TaskPageProps {
   test: Test;
-  tasks: Task[];
+  task: Task;
+  taskIndex: number;
 }
 
-const TestPage = ({ test, tasks }: TestPageProps) => {
-  const [currentTaskIndex, setCurrentTaskIndex] = useState(0);
-
-  const handleNextTask = () => {
-    if (currentTaskIndex < tasks.length - 1) {
-      setCurrentTaskIndex(currentTaskIndex + 1);
-    }
-  };
-
-  const handlePreviousTask = () => {
-    if (currentTaskIndex > 0) {
-      setCurrentTaskIndex(currentTaskIndex - 1);
-    }
-  };
+const TaskPage = ({
+  test,
+  task,
+  taskIndex: currentTaskIndex,
+}: TaskPageProps) => {
+  const isFirst = currentTaskIndex === 0;
+  const isLast = currentTaskIndex === test.tasks.length - 1;
 
   return (
-    <div className="min-h-[80vh] flex items-center justify-center">
-      <TestInterface
-        task={tasks[currentTaskIndex]}
-        testId={test.id}
-        onNext={handleNextTask}
-        onPrevious={handlePreviousTask}
-        isFirst={currentTaskIndex === 0}
-        isLast={currentTaskIndex === tasks.length - 1}
-      />
+    <div className="min-h-[90vh] flex items-center justify-center">
+      <div className="space-y-6 w-full max-w-2xl mx-auto">
+        <TaskInterface task={task} />
+        <div className="flex justify-between">
+          <Form action={`/test/${test.id}/${Number(currentTaskIndex) - 1}`}>
+            <Button
+              disabled={isFirst}
+              className="bg-primary-500 hover:bg-primary-600 text-white rounded-full"
+            >
+              <ArrowLeft />
+            </Button>
+          </Form>
+          <Form action={`/test/${test.id}/${Number(currentTaskIndex) + 1}`}>
+            <Button
+              disabled={isLast}
+              className="bg-primary-500 hover:bg-primary-600 text-white rounded-full"
+            >
+              <ArrowRight />
+            </Button>
+          </Form>
+        </div>
+      </div>
     </div>
   );
 };
 
-export default TestPage;
+export default TaskPage;

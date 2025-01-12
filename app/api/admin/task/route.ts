@@ -109,7 +109,7 @@ export const POST = apiMiddleware(async (request: NextRequest) => {
     grammarRule: grammarRule?.data.en,
     quantity,
   });
-  // console.log(data);
+
   if (!data)
     throw new ApiError(
       `Something went wrong during rule generation, try again later.`,
@@ -138,7 +138,7 @@ export const POST = apiMiddleware(async (request: NextRequest) => {
   };
 
   await createFewTasks();
-  // console.log(newTasks);
+
   return NextResponse.json(
     {
       message: `Successfully created new task for ${language.name} language.`,
@@ -162,8 +162,6 @@ export const PATCH = apiMiddleware(async (request: NextRequest) => {
     ...task,
     ...parsedBody,
   });
-
-  // console.log(updatedTask);
 
   return NextResponse.json(
     { message: "Successfully updated new task.", updatedTask },

@@ -20,8 +20,6 @@ const TestLayout = async ({
 }) => {
   const { testId } = await params;
 
-  console.log(testId);
-
   const session = await auth();
 
   if (!session) return redirect("/login");

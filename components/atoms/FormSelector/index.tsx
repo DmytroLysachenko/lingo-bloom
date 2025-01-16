@@ -1,74 +1,67 @@
 "use client";
 
-import { Label } from "@components/ui/label";
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@components/ui/select";
-import {
-  Control,
-  Controller,
-  FieldErrors,
-  FieldValues,
-  Path,
-} from "react-hook-form";
+} from "@/components/ui/select";
+import { Control, FieldValues, Path } from "react-hook-form";
 
 interface FormSelectorProps<T extends FieldValues> {
-  id: Path<T>;
+  name: Path<T>;
   label: string;
   control: Control<T>;
-  errors: FieldErrors<T>;
   options: { value: string; name: string }[];
   placeholder: string;
-  required?: boolean;
 }
 
 const FormSelector = <T extends FieldValues>({
-  id,
+  name,
   label,
   control,
-  errors,
   options,
   placeholder,
-  required,
 }: FormSelectorProps<T>) => {
   return (
-    <div className="space-y-2">
-      <Label htmlFor={id}>{label}</Label>
-      <Controller
-        name={id}
-        control={control}
-        rules={required ? { required: `${label} is required` } : undefined}
-        render={({ field }) => (
+    <FormField
+      control={control}
+      name={name}
+      render={({ field }) => (
+        <FormItem>
+          <FormLabel>{label}</FormLabel>
           <Select
             onValueChange={field.onChange}
             defaultValue={field.value}
           >
-            <SelectTrigger id={id}>
-              <SelectValue placeholder={placeholder} />
-            </SelectTrigger>
+            <FormControl>
+              <SelectTrigger>
+                <SelectValue placeholder={placeholder} />
+              </SelectTrigger>
+            </FormControl>
             <SelectContent>
               {options.map((option) => (
                 <SelectItem
+                  key={option.value}
                   value={option.value}
-                  key={option.name}
                 >
                   {option.name}
                 </SelectItem>
               ))}
             </SelectContent>
           </Select>
-        )}
-      />
-      {errors[id] && (
-        <p className="text-destructive text-sm">
-          {errors[id]?.message?.toString()}
-        </p>
+          <FormMessage />
+        </FormItem>
       )}
-    </div>
+    />
   );
 };
 

@@ -1,13 +1,11 @@
-import { redirect } from "next/navigation";
+"use client";
 
-const Test = async ({
-  params,
-}: {
-  params: Promise<{ testId: string; taskIndex: string }>;
-}) => {
-  const { testId } = await params;
+import TestPage from "@components/pages/TestPage";
+import React, { useEffect } from "react";
 
-  return redirect(`/test/${testId}/0`);
+const Page = () => {
+  useEffect(() => () => {}, []);
+  return <TestPage />;
 };
 
-export default Test;
+export default Page;

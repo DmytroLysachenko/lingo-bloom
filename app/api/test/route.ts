@@ -6,6 +6,11 @@ import { createTestSchema } from "@/schemas/testScheme";
 import { apiMiddleware } from "@components/providers/apiMiddleware";
 import { NextRequest, NextResponse } from "next/server";
 
+export async function GET(request: NextRequest) {
+  console.log(request);
+  return NextResponse.json({ message: "All ok" });
+}
+
 export const POST = apiMiddleware(async (request: NextRequest) => {
   const body = await request.json();
   const parsedBody = createTestSchema.parse(body);
@@ -39,8 +44,3 @@ export const POST = apiMiddleware(async (request: NextRequest) => {
     { status: 200 }
   );
 });
-
-export async function GET(request: NextRequest) {
-  console.log(request);
-  return NextResponse.json({ message: "All ok" });
-}

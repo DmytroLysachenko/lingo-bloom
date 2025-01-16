@@ -38,15 +38,19 @@ const TestLayout = async ({
 
   const parsedTasks = taskArray.parse(tasks);
 
+  const completeTask = (taskId: number, score: number) => {
+    parsedTest.tasks = [
+      ...parsedTest.tasks,
+      { taskId, score, isCompleted: true },
+    ];
+  };
+
   return (
-    <>
-      <h1 className="text-4xl font-bold mb-8 text-center mt-5">
-        Polish language test
-      </h1>
-      <TestContextProvider value={{ test: parsedTest, tasks: parsedTasks }}>
-        {children}
-      </TestContextProvider>
-    </>
+    <TestContextProvider
+      value={{ test: parsedTest, tasks: parsedTasks, completeTask }}
+    >
+      {children}
+    </TestContextProvider>
   );
 };
 

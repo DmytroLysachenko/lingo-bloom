@@ -3,43 +3,48 @@ import { Task } from "@/schemas";
 import { Test } from "@/schemas/testScheme";
 import React from "react";
 import { Button } from "@components/ui/button";
-import Form from "next/form";
 import { ArrowLeft, ArrowRight } from "lucide-react";
-interface TaskPageProps {
-  test: Test;
-  task: Task;
-  taskIndex: number;
-}
+import { TestContext } from "@components/providers/testContext";
 
-const TaskPage = ({
-  test,
-  task,
-  taskIndex: currentTaskIndex,
-}: TaskPageProps) => {
-  const isFirst = currentTaskIndex === 0;
-  const isLast = currentTaskIndex === test.tasks.length - 1;
+
+const TaskPage = () => {
+  const [currentTaskIndex, setCurrentTaskIndex] = React.useState(0);
+
+    const { test, tasks } = React.useContext(TestContext) as {
+      test: Test;
+      tasks: Task[];
+    };
+  
+
+  const handleNextPage = () => {
+    setCurrentTaskIndex((prev) => prev + 1);
+  };
+
+  const handlePreviousPage = () => {
+    setCurrentTaskIndex((prev) => prev - 1);
+  };
+
 
   return (
     <div className="min-h-[90vh] flex items-center justify-center">
       <div className="space-y-6 w-full max-w-2xl mx-auto">
-        <TaskInterface task={task} />
+        <TaskInterface task={tasks[currentTaskIndex]} />
         <div className="flex justify-between">
-          <Form action={`/test/${test.id}/${Number(currentTaskIndex) - 1}`}>
-            <Button
-              disabled={isFirst}
-              className="bg-primary-500 hover:bg-primary-600 text-white rounded-full"
-            >
-              <ArrowLeft />
-            </Button>
-          </Form>
-          <Form action={`/test/${test.id}/${Number(currentTaskIndex) + 1}`}>
-            <Button
-              disabled={isLast}
-              className="bg-primary-500 hover:bg-primary-600 text-white rounded-full"
-            >
-              <ArrowRight />
-            </Button>
-          </Form>
+          <Button
+            disabled={currentTaskIndex === 0}
+            className="bg-primary-500 hover:bg-primary-600 text-white rounded-full"
+            onClick={handlePreviousPage}
+          >
+            <ArrowLeft />
+          </Button>
+
+          <Button
+            disabled={currentTaskIndex === test.tasks.length - 1;}
+            className="bg-primary-500 hover:bg-primary-600 text-white rounded-full"
+            onClick={handleNextPage}
+          >
+            <ArrowRight />
+          </Button>
         </div>
       </div>
     </div>

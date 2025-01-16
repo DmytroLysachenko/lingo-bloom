@@ -18,8 +18,9 @@ export const testSchema = z.object({
   score: z.number().nullable(),
   tasks: z.array(
     z.object({
-      status: z.string(),
+      isCompleted: z.boolean(),
       taskId: z.number().int().nonnegative(),
+      score: z.number().optional(),
     })
   ),
 });

@@ -1,10 +1,11 @@
 "use client";
-import { useState } from "react";
+import React, { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { TestTextTaskType } from "@/schemas";
+import { TestContext } from "@components/providers/testContext";
 
 interface TextTaskProps {
   task: TestTextTaskType;
@@ -12,9 +13,14 @@ interface TextTaskProps {
 
 const TextTask = ({ task }: TextTaskProps) => {
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
-
+  const { completeTask } = React.useContext(TestContext) as {
+    completeTask: (taskId: number, score: number) => void;
+  };
   const handleSubmit = () => {
-    if (selectedAnswer) {
+    if (selectedAnswer === task.data.correctAnswer) {
+      completeTask(task.id, 1);
+    } else {
+      completeTask(task.id, 0);
     }
   };
 
@@ -46,6 +52,7 @@ const TextTask = ({ task }: TextTaskProps) => {
           </div>
         ))}
       </RadioGroup>
+
       <Button
         onClick={handleSubmit}
         disabled={!selectedAnswer}

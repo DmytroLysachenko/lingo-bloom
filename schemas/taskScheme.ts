@@ -103,9 +103,3 @@ export type ConnectionTaskType = TaskWithSpecificData<
 export type FillInBlankTaskType = TaskWithSpecificData<
   z.infer<typeof fillInBlankTaskDataScheme>
 >;
-
-export type SpecificTask =
-  | TestTaskType
-  | TestTextTaskType
-  | ConnectionTaskType
-  | FillInBlankTaskType;

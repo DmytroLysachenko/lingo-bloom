@@ -6,21 +6,25 @@ import FormSelector from "@atoms/FormSelector";
 import axios from "axios";
 import { useState } from "react";
 import { Language } from "@prisma/client";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Form } from "@components/ui/form";
 
-interface GrammarRuleFormData {
-  languageId: string;
-}
+const grammarRuleCreationSchema = z.object({
+  languageId: z.string().min(1, "Please select a language"),
+});
 
 interface GrammarRuleFormProps {
   languages: Language[];
 }
 
 const GrammarRuleForm = ({ languages }: GrammarRuleFormProps) => {
-  const {
-    control,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<GrammarRuleFormData>();
+  const form = useForm<z.infer<typeof grammarRuleCreationSchema>>({
+    resolver: zodResolver(grammarRuleCreationSchema),
+    defaultValues: {
+      languageId: "",
+    },
+  });
 
   const [generatedRule, setGeneratedRule] = useState<{
     languageId: number;
@@ -33,8 +37,10 @@ const GrammarRuleForm = ({ languages }: GrammarRuleFormProps) => {
     name: language.name,
   }));
 
-  const onSubmit = async (data: GrammarRuleFormData) => {
-    const languageId = Number(data.languageId);
+  const onSubmit = async (
+    values: z.infer<typeof grammarRuleCreationSchema>
+  ) => {
+    const languageId = Number(values.languageId);
 
     const response = await axios.post("/api/admin/grammar-rule", {
       languageId,
@@ -59,26 +65,27 @@ const GrammarRuleForm = ({ languages }: GrammarRuleFormProps) => {
 
   return (
     <>
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="space-y-6"
-      >
-        <FormSelector
-          id="languageId"
-          label="Language"
-          control={control}
-          errors={errors}
-          options={languageOptions}
-          placeholder="Select a language"
-        />
-
-        <Button
-          type="submit"
-          className="w-full"
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="space-y-6 w-2/3 mx-auto"
         >
-          Create Grammar Rule
-        </Button>
-      </form>
+          <FormSelector
+            name="languageId"
+            label="Language"
+            control={form.control}
+            options={languageOptions}
+            placeholder="Select a language"
+          />
+
+          <Button
+            type="submit"
+            className="w-full"
+          >
+            Create Grammar Rule
+          </Button>
+        </form>
+      </Form>
       {generatedRule ? (
         <>
           <h2 className="text-2xl font-semibold my-5">Created Rule:</h2>
@@ -93,8 +100,18 @@ const GrammarRuleForm = ({ languages }: GrammarRuleFormProps) => {
             ))}
           </div>
           <div className="flex justify-between p-2">
-            <Button onClick={onAcceptRule}>Accept</Button>
-            <Button onClick={onDeleteRule}>Delete</Button>
+            <Button
+              type="button"
+              onClick={onAcceptRule}
+            >
+              Accept
+            </Button>
+            <Button
+              type="button"
+              onClick={onDeleteRule}
+            >
+              Delete
+            </Button>
           </div>
         </>
       ) : null}

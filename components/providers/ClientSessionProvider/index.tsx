@@ -12,11 +12,7 @@ const ClientSessionProvider = ({
   children,
   session,
 }: ClientSessionProviderProps) => {
-  return (
-    <SessionProvider session={session}>
-      <div>{children}</div>
-    </SessionProvider>
-  );
+  return <SessionProvider session={session}>{children}</SessionProvider>;
 };
 
 export default ClientSessionProvider;

@@ -16,21 +16,21 @@ import {
 } from "@/components/ui/select";
 import { Control, FieldValues, Path } from "react-hook-form";
 
-interface FormSelectorProps<T extends FieldValues> {
-  name: Path<T>;
+interface FormSelectorProps<TFieldValues extends FieldValues> {
+  name: Path<TFieldValues>;
   label: string;
-  control: Control<T>;
+  control: Control<TFieldValues>;
   options: { value: string; name: string }[];
   placeholder: string;
 }
 
-const FormSelector = <T extends FieldValues>({
+const FormSelector = <TFieldValues extends FieldValues>({
   name,
   label,
   control,
   options,
   placeholder,
-}: FormSelectorProps<T>) => {
+}: FormSelectorProps<TFieldValues>) => {
   return (
     <FormField
       control={control}

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import TaskForm from "@components/organisms/TaskForm";
+import TaskCreationForm from "@components/organisms/TaskCreationForm";
 import GrammarRuleForm from "@components/organisms/GrammarRuleForm";
 import ConstantsTable from "@components/molecules/ConstantsTable";
 import {
@@ -34,7 +34,7 @@ const AdminPage = ({
   const [activeTab, setActiveTab] = useState("task");
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container min-h-[80vh] mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold text-primary-700 mb-8">
         Admin Dashboard
       </h1>
@@ -48,7 +48,7 @@ const AdminPage = ({
           <TabsTrigger value="constants">View Constants</TabsTrigger>
         </TabsList>
         <TabsContent value="task">
-          <TaskForm
+          <TaskCreationForm
             grammarRules={grammarRules}
             taskTopics={taskTopics}
             languageLevels={languageLevels}

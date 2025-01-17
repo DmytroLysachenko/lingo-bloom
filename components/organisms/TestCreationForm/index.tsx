@@ -13,13 +13,11 @@ import axios from "axios";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 
-const formSchema = z.object({
+const testCreationSchema = z.object({
   languageId: z.string().min(1, "Please select a language"),
   languageLevelId: z.string().min(1, "Please select a language level"),
   quantity: z.string().min(1, "Please select the quantity of tasks"),
 });
-
-type FormData = z.infer<typeof formSchema>;
 
 interface TestCreationFormProps {
   languageLevels: LanguageLevel[];
@@ -36,8 +34,8 @@ const TestCreationForm = ({
 
   const router = useRouter();
 
-  const form = useForm<FormData>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof testCreationSchema>>({
+    resolver: zodResolver(testCreationSchema),
     defaultValues: {
       languageId: "",
       languageLevelId: "",
@@ -61,14 +59,14 @@ const TestCreationForm = ({
     { value: "15", name: "15" },
   ];
 
-  const onSubmit = async (data: FormData) => {
+  const onSubmit = async (values: z.infer<typeof testCreationSchema>) => {
     setIsLoading(true);
     try {
       const response = await axios.post("/api/test", {
         userId: session?.user.id,
-        languageId: Number(data.languageId),
-        languageLevelId: Number(data.languageLevelId),
-        quantity: Number(data.quantity),
+        languageId: Number(values.languageId),
+        languageLevelId: Number(values.languageLevelId),
+        quantity: Number(values.quantity),
       });
 
       router.push(`/test/${response.data.newTest.id}`);
@@ -90,7 +88,7 @@ const TestCreationForm = ({
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="space-y-6 w-full max-w-md mx-auto"
+        className="space-y-6 w-2/3 mx-auto"
       >
         <FormSelector
           name="languageId"

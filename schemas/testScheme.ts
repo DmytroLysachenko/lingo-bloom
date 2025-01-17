@@ -18,7 +18,7 @@ export const testSchema = z.object({
   score: z.number().nullable(),
   tasks: z.array(
     z.object({
-      isCompleted: z.boolean(),
+      isCompleted: z.boolean().optional(),
       taskId: z.number().int().nonnegative(),
       score: z.number().optional(),
     })
@@ -27,5 +27,4 @@ export const testSchema = z.object({
 
 export const testArraySchema = z.array(testSchema);
 
-export type TestArray = z.infer<typeof testArraySchema>;
 export type Test = z.infer<typeof testSchema>;

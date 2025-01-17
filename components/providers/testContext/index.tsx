@@ -18,11 +18,21 @@ const TestContextProvider = ({
   value: {
     test: Test;
     tasks: Task[];
-    completeTask: (taskId: number, score: number) => void;
   };
   children: React.ReactNode;
 }) => {
-  return <TestContext.Provider value={value}>{children}</TestContext.Provider>;
+  const completeTask = (taskId: number, score: number) => {
+    value.test.tasks = [
+      ...value.test.tasks.filter((task) => task.taskId !== taskId),
+      { taskId, score, isCompleted: true },
+    ];
+  };
+
+  return (
+    <TestContext.Provider value={{ ...value, completeTask }}>
+      {children}
+    </TestContext.Provider>
+  );
 };
 
 export default TestContextProvider;

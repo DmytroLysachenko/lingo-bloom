@@ -1,70 +1,71 @@
 import React, { useState } from "react";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Eye, EyeOff, Lock } from "lucide-react";
+import { FieldValues, Path, Control } from "react-hook-form";
 import {
-  UseFormRegister,
-  FieldValues,
-  FieldErrors,
-  RegisterOptions,
-  Path,
-} from "react-hook-form";
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@components/ui/form";
 
-interface HiddableInputProps<TFieldValues extends FieldValues> {
-  id: Path<TFieldValues>;
+interface HidableInputProps<TFieldValues extends FieldValues> {
+  name: Path<TFieldValues>;
   label: string;
-  placeholder: string;
-  register: UseFormRegister<TFieldValues>;
-  errors: FieldErrors<TFieldValues>;
-  validation?: RegisterOptions<TFieldValues, Path<TFieldValues>>;
+  control: Control<TFieldValues>;
+  placeholder?: string;
+  description?: string;
+  type?: "text" | "number" | "email";
 }
 
-const HiddableInput = <TFieldValues extends FieldValues>({
-  id,
+const HidableInput = <TFieldValues extends FieldValues>({
+  name,
   label,
-  placeholder,
-  register,
-  errors,
-  validation,
-}: HiddableInputProps<TFieldValues>) => {
+  type = "text",
+  placeholder = "Input here...",
+  control,
+  description,
+}: HidableInputProps<TFieldValues>) => {
   const [showPassword, setShowPassword] = useState(false);
 
   return (
-    <div className="space-y-2">
-      <Label
-        htmlFor={id}
-        className="text-primary-700"
-      >
-        {label}
-      </Label>
-      <div className="relative">
-        <Input
-          id={id}
-          type={showPassword ? "text" : "password"}
-          placeholder={placeholder}
-          {...register(id, validation)}
-          className="pl-10 pr-10 border-primary-200 focus:border-primary-500 focus:ring-primary-500"
-        />
-        <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-primary-400 h-5 w-5" />
-        <button
-          type="button"
-          onClick={() => setShowPassword(!showPassword)}
-          className="absolute right-3 top-1/2 transform -translate-y-1/2 text-primary-400"
-        >
-          {showPassword ? (
-            <EyeOff className="h-5 w-5" />
-          ) : (
-            <Eye className="h-5 w-5" />
-          )}
-        </button>
-      </div>
-      {errors[id] && (
-        <p className="text-destructive text-sm">
-          {errors[id]?.message as string}
-        </p>
+    <FormField
+      control={control}
+      name={name}
+      render={({ field }) => (
+        <FormItem className="space-y-2">
+          <FormLabel className="text-primary-700">{label}</FormLabel>
+          <FormControl>
+            <div className="relative">
+              <Input
+                {...field}
+                id={name}
+                type={showPassword ? type || "text" : "password"}
+                placeholder={placeholder || "Input here..."}
+                className="pl-10 pr-10 border-primary-200 focus:border-primary-500 focus:ring-primary-500"
+              />
+              <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-primary-400 h-5 w-5" />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-primary-400"
+              >
+                {showPassword ? (
+                  <EyeOff className="h-5 w-5" />
+                ) : (
+                  <Eye className="h-5 w-5" />
+                )}
+              </button>
+            </div>
+          </FormControl>
+          {description && <FormDescription>{description}</FormDescription>}
+          <FormMessage />
+        </FormItem>
       )}
-    </div>
+    />
   );
 };
 
-export default HiddableInput;
+export default HidableInput;

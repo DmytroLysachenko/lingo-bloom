@@ -6,24 +6,21 @@ import { Button } from "@components/ui/button";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { TestContext } from "@components/providers/testContext";
 
-
 const TaskPage = () => {
   const [currentTaskIndex, setCurrentTaskIndex] = React.useState(0);
 
-    const { test, tasks } = React.useContext(TestContext) as {
-      test: Test;
-      tasks: Task[];
-    };
-  
+  const { test, tasks } = React.useContext(TestContext) as {
+    test: Test;
+    tasks: Task[];
+  };
 
-  const handleNextPage = () => {
+  const handleNextQuestion = () => {
     setCurrentTaskIndex((prev) => prev + 1);
   };
 
-  const handlePreviousPage = () => {
+  const handlePreviousQuestion = () => {
     setCurrentTaskIndex((prev) => prev - 1);
   };
-
 
   return (
     <div className="min-h-[90vh] flex items-center justify-center">
@@ -33,15 +30,15 @@ const TaskPage = () => {
           <Button
             disabled={currentTaskIndex === 0}
             className="bg-primary-500 hover:bg-primary-600 text-white rounded-full"
-            onClick={handlePreviousPage}
+            onClick={handlePreviousQuestion}
           >
             <ArrowLeft />
           </Button>
 
           <Button
-            disabled={currentTaskIndex === test.tasks.length - 1;}
+            disabled={currentTaskIndex === test.tasks.length - 1}
             className="bg-primary-500 hover:bg-primary-600 text-white rounded-full"
-            onClick={handleNextPage}
+            onClick={handleNextQuestion}
           >
             <ArrowRight />
           </Button>

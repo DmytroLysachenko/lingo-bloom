@@ -25,32 +25,27 @@ const Header = async () => {
           <div className="w-full sm:w-auto mb-2 sm:mb-0">
             <LanguageSelector />
           </div>
-          {session ? (
-            <>
-              <Button
-                asChild
-                variant="ghost"
-                className="w-full sm:w-auto text-primary-700 hover:text-primary-800 hover:bg-primary-100 bg-neutral-200"
-              >
-                <Link href="/test-creation">Create Test</Link>
-              </Button>
-              {session.user.role === "admin" && (
-                <Button
-                  asChild
-                  variant="ghost"
-                  className="w-full sm:w-auto text-primary-700 hover:text-primary-800 hover:bg-primary-100"
-                >
-                  <Link href="/admin">
-                    <Settings className="mr-2 h-4 w-4" />
-                    Admin
-                  </Link>
-                </Button>
-              )}
-              <AuthButtons isLoggedIn={true} />
-            </>
-          ) : (
-            <AuthButtons />
+
+          <Button
+            asChild
+            variant="ghost"
+            className="w-full sm:w-auto text-primary-700 hover:text-primary-800 hover:bg-primary-100 bg-neutral-200"
+          >
+            <Link href="/test-creation">Create Test</Link>
+          </Button>
+          {session?.user.role === "admin" && (
+            <Button
+              asChild
+              variant="ghost"
+              className="w-full sm:w-auto text-primary-700 hover:text-primary-800 hover:bg-primary-100"
+            >
+              <Link href="/admin">
+                <Settings className="mr-2 h-4 w-4" />
+                Admin
+              </Link>
+            </Button>
           )}
+          <AuthButtons user={session?.user} />
         </nav>
       </div>
     </header>

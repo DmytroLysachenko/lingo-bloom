@@ -5,7 +5,7 @@ import { Button } from "@components/ui/button";
 import Link from "next/link";
 
 interface UserCurrentTestProgressProps {
-  test?: Test;
+  test: Test;
 }
 
 const UserCurrentTestProgress = ({ test }: UserCurrentTestProgressProps) => {

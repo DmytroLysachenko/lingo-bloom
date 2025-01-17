@@ -10,28 +10,59 @@ import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import HidableInput from "@atoms/HidableInput";
 import InputWithIcon from "@atoms/InputWithIcon";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Form } from "@components/ui/form";
 
-type FormData = {
-  name: string;
-  email: string;
-  password: string;
-  repeatPassword: string;
-};
+const registerSchema = z
+  .object({
+    name: z.string().min(3, "Name must be at least 3 characters long"),
+    email: z.string().email("Invalid email address"),
+    password: z
+      .string()
+      .min(8, "Password must be at least 6 characters long")
+      .max(20, "Password must be at most 20 characters long")
+      .refine((password) => /[A-Z]/.test(password), {
+        message: 'Password must contain at least one uppercase letter",',
+      })
+      .refine((password) => /[a-z]/.test(password), {
+        message: 'Password must contain at least one lowercase letter",',
+      })
+      .refine((password) => /[0-9]/.test(password), {
+        message: "Password must contain at least one number",
+      })
+      .refine((password) => /[!@#$%^&*]/.test(password), {
+        message: "Password must contain at least one special character",
+      }),
+    confirmPassword: z.string(),
+  })
+  .refine(
+    (values) => {
+      return values.password === values.confirmPassword;
+    },
+    {
+      message: "Passwords do not match",
+      path: ["confirmPassword"],
+    }
+  );
 
 const RegisterForm = () => {
-  const {
-    register,
-    reset,
-    handleSubmit,
-    formState: { errors },
-    watch,
-  } = useForm<FormData>();
+  const form = useForm<z.infer<typeof registerSchema>>({
+    resolver: zodResolver(registerSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+    },
+  });
+
   const { toast } = useToast();
   const router = useRouter();
 
-  const onSubmit = async (data: FormData) => {
+  const onSubmit = async (values: z.infer<typeof registerSchema>) => {
     try {
-      const response = await axios.post("/api/auth/register", data);
+      const response = await axios.post("/api/auth/register", values);
 
       toast({
         title: "Success!",
@@ -40,7 +71,6 @@ const RegisterForm = () => {
         color: "green",
       });
 
-      reset();
       router.push("/login");
     } catch (error) {
       if (error instanceof AxiosError) {
@@ -61,96 +91,63 @@ const RegisterForm = () => {
     }
   };
 
-  const password = watch("password");
-
   return (
-    <div className="w-full max-w-md mx-auto space-y-8">
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="space-y-4"
-      >
-        <InputWithIcon
-          id="name"
-          label="Name"
-          type="text"
-          placeholder="Enter your name"
-          icon={User}
-          register={register}
-          errors={errors}
-          validation={{
-            required: "Name is required",
-            minLength: {
-              value: 2,
-              message: "Name must be at least 2 characters",
-            },
-          }}
-        />
-
-        <InputWithIcon
-          id="email"
-          label="Email"
-          type="email"
-          placeholder="Enter your email"
-          icon={Mail}
-          register={register}
-          errors={errors}
-          validation={{
-            required: "Email is required",
-            pattern: {
-              value: /\S+@\S+\.\S+/,
-              message: "Invalid email address",
-            },
-          }}
-        />
-
-        <HidableInput
-          id="password"
-          label="Password"
-          placeholder="Enter your password"
-          register={register}
-          errors={errors}
-          validation={{
-            required: "Password is required",
-            minLength: {
-              value: 8,
-              message: "Password must be at least 8 characters",
-            },
-          }}
-        />
-
-        <HidableInput
-          id="repeatPassword"
-          label="Repeat Password"
-          placeholder="Repeat your password"
-          register={register}
-          errors={errors}
-          validation={{
-            required: "Please repeat your password",
-            validate: (value: string) =>
-              value === password || "Passwords do not match",
-          }}
-        />
-
-        <Button
-          type="submit"
-          className="w-full bg-primary-500 hover:bg-primary-600 text-white"
+    <Form {...form}>
+      <div className="w-full max-w-md mx-auto space-y-8">
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="space-y-4"
         >
-          Register
-        </Button>
-      </form>
+          <InputWithIcon
+            name="name"
+            label="Name"
+            type="text"
+            placeholder="Enter your name"
+            icon={User}
+            control={form.control}
+          />
 
-      <div className="text-center">
-        <p className="text-sm text-primary-600">
-          Already have an account?{" "}
-          <Link
-            href="/login"
-            className="text-primary-700 hover:underline"
-          >
-            Login here
-          </Link>
-        </p>
+          <InputWithIcon
+            name="email"
+            label="Email"
+            type="email"
+            placeholder="Enter your email"
+            icon={Mail}
+            control={form.control}
+          />
+
+          <HidableInput
+            name="password"
+            label="Password"
+            placeholder="Enter your password"
+            control={form.control}
+          />
+
+          <HidableInput
+            name="confirmPassword"
+            label="Confirm Password"
+            placeholder="Confirm your password"
+            control={form.control}
+          />
+
+          <Button className="w-full bg-primary-500 hover:bg-primary-600 text-white">
+            Register
+          </Button>
+        </form>
+
+        <div className="text-center">
+          <p className="text-sm text-primary-600">
+            Already have an account?{" "}
+            <Link
+              href="/login"
+              className="text-primary-700 hover:underline"
+            >
+              Login here
+            </Link>
+          </p>
+        </div>
       </div>
-    </div>
+    </Form>
   );
 };
 

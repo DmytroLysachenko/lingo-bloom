@@ -14,18 +14,21 @@ import {
   TaskType,
 } from "@prisma/client";
 import { Task } from "@/schemas";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Form } from "@components/ui/form";
 
-interface TaskFormData {
+interface TaskCreationFormData {
   languageId: string;
   languageLevelId: string;
   taskTypeId: string;
   taskPurposeId: string;
+  quantity: string;
   taskTopicId?: string;
   grammarRuleId?: string;
-  quantity: string;
 }
 
-interface TaskFormProps {
+interface TaskCreationFormProps {
   grammarRules: GrammarRule[];
   taskTopics: TaskTopic[];
   languageLevels: LanguageLevel[];
@@ -34,28 +37,44 @@ interface TaskFormProps {
   taskTypes: TaskType[];
 }
 
-const TaskForm = ({
+const taskCreationSchema = z.object({
+  languageId: z.string().min(1, "Please select a language"),
+  languageLevelId: z.string().min(1, "Please select a language level"),
+  taskTypeId: z.string().min(1, "Please select a task type"),
+  taskPurposeId: z.string().min(1, "Please select a task purpose"),
+  quantity: z.string().min(1, "Please select the quantity of tasks"),
+  taskTopicId: z.string().optional(),
+  grammarRuleId: z.string().optional(),
+});
+
+const TaskCreationForm = ({
   grammarRules,
   taskTopics,
   languageLevels,
   languages,
   taskPurposes,
   taskTypes,
-}: TaskFormProps) => {
-  const {
-    watch,
-    control,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<TaskFormData>();
-
+}: TaskCreationFormProps) => {
   const [generatedTasks, setGeneratedTasks] = useState<Task[]>([]);
+
+  const form = useForm<z.infer<typeof taskCreationSchema>>({
+    resolver: zodResolver(taskCreationSchema),
+    defaultValues: {
+      languageId: "",
+      languageLevelId: "",
+      taskTypeId: "",
+      taskPurposeId: "",
+      quantity: "",
+      taskTopicId: "",
+      grammarRuleId: "",
+    },
+  });
 
   const [isLoading, setIsLoading] = useState(false);
 
-  const selectedLanguageId = watch("languageId");
+  const selectedLanguageId = form.watch("languageId");
 
-  const selectedPurposeId = watch("taskPurposeId");
+  const selectedPurposeId = form.watch("taskPurposeId");
 
   const grammarRulesOptions = grammarRules
     .filter((rule) => rule.languageId.toString() === selectedLanguageId)
@@ -103,7 +122,7 @@ const TaskForm = ({
     { value: "9", name: "9" },
   ];
 
-  const onSubmit = async (data: TaskFormData) => {
+  const onSubmit = async (data: TaskCreationFormData) => {
     const numericData = {
       languageId: Number(data.languageId),
       languageLevelId: Number(data.languageLevelId),
@@ -158,83 +177,70 @@ const TaskForm = ({
   };
 
   return (
-    <div>
+    <Form {...form}>
       <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="space-y-6 w-full max-w-md mx-auto"
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="space-y-6 w-2/3 mx-auto"
       >
         <FormSelector
-          id="languageId"
+          name="languageId"
           label="Language"
-          control={control}
-          errors={errors}
+          control={form.control}
           options={languageOptions}
           placeholder="Select a language"
-          required
         />
         <FormSelector
-          id="quantity"
+          name="quantity"
           label="Quantity"
-          control={control}
-          errors={errors}
+          control={form.control}
           options={quantityOptions}
           placeholder="Select quantity"
-          required
         />
 
         <FormSelector
-          id="languageLevelId"
+          name="languageLevelId"
           label="Language Level"
-          control={control}
-          errors={errors}
+          control={form.control}
           options={languageLevelsOptions}
           placeholder="Select a language level"
-          required
         />
 
         <FormSelector
-          id="taskTopicId"
+          name="taskTopicId"
           label="Task topic"
-          control={control}
-          errors={errors}
+          control={form.control}
           options={taskTopicsOptions}
           placeholder="Select a task topic"
         />
 
         {selectedLanguageId && (
           <FormSelector
-            id="taskPurposeId"
+            name="taskPurposeId"
             label="Task purpose"
-            control={control}
-            errors={errors}
+            control={form.control}
             options={taskPurposeIdOptions}
             placeholder="Select a task purpose"
-            required
           />
         )}
 
         {selectedPurposeId && selectedLanguageId && (
           <FormSelector
-            id="taskTypeId"
+            name="taskTypeId"
             label="Task type"
-            control={control}
-            errors={errors}
+            control={form.control}
             options={taskTypeIdOptions}
             placeholder="Select a task type"
-            required
           />
         )}
 
         {selectedLanguageId &&
           selectedPurposeId === grammarPurposeId?.toString() && (
             <FormSelector
-              id="grammarRuleId"
+              name="grammarRuleId"
               label="Grammar Rule"
-              control={control}
-              errors={errors}
+              control={form.control}
               options={grammarRulesOptions}
               placeholder="Select a grammar rule"
-              required
             />
           )}
 
@@ -266,8 +272,8 @@ const TaskForm = ({
             </Fragment>
           ))
         : null}
-    </div>
+    </Form>
   );
 };
 
-export default TaskForm;
+export default TaskCreationForm;

@@ -8,11 +8,9 @@ import { signIn } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
 import HidableInput from "@atoms/HidableInput";
 import InputWithIcon from "@atoms/InputWithIcon";
-
-interface FormData {
-  email: string;
-  password: string;
-}
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Form } from "@components/ui/form";
 
 enum Error {
   CredentialsSignin = "CredentialsSignin",
@@ -34,21 +32,28 @@ const errorMap = {
   ),
 };
 
+const loginSchema = z.object({
+  email: z.string().email(),
+  password: z.string(),
+});
+
 const LoginForm = () => {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<FormData>();
+  const form = useForm<z.infer<typeof loginSchema>>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
 
   const search = useSearchParams();
   const error = search.get("error") as Error;
 
-  const onSubmit = async (data: FormData) => {
+  const onSubmit = async (values: z.infer<typeof loginSchema>) => {
     try {
       await signIn("credentials", {
-        email: data.email,
-        password: data.password,
+        email: values.email,
+        password: values.password,
         redirectTo: "/dashboard",
       });
     } catch (error) {
@@ -65,53 +70,41 @@ const LoginForm = () => {
 
   return (
     <div className="w-full max-w-md mx-auto space-y-8">
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="space-y-4"
-      >
-        <InputWithIcon
-          id="email"
-          label="Email"
-          type="email"
-          placeholder="Enter your email"
-          icon={Mail}
-          register={register}
-          errors={errors}
-          validation={{
-            required: "Email is required",
-            pattern: {
-              value: /\S+@\S+\.\S+/,
-              message: "Invalid email address",
-            },
-          }}
-        />
-
-        <HidableInput
-          id="password"
-          label="Password"
-          placeholder="Enter your password"
-          register={register}
-          errors={errors}
-          validation={{
-            required: "Password is required",
-            minLength: {
-              value: 8,
-              message: "Password must be at least 8 characters",
-            },
-          }}
-        />
-
-        <Button
-          type="submit"
-          className="w-full bg-primary-500 hover:bg-primary-600 text-white"
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="space-y-8"
         >
-          Log in
-        </Button>
-      </form>{" "}
+          <InputWithIcon
+            name="email"
+            label="Email"
+            type="email"
+            control={form.control}
+            placeholder="Enter your email"
+            icon={Mail}
+          />
+
+          <HidableInput
+            name="password"
+            label="Password"
+            placeholder="Enter your password"
+            control={form.control}
+          />
+
+          <Button
+            type="submit"
+            className="w-full bg-primary-500 hover:bg-primary-600 text-white"
+          >
+            Log in
+          </Button>
+        </form>
+      </Form>
+
       <div className="text-destructive mb-4">
         {error &&
           (errorMap[error] || "Please contact us if this error persists.")}
       </div>
+
       <div className="relative">
         <div className="absolute inset-0 flex items-center">
           <span className="w-full border-t border-primary-200" />

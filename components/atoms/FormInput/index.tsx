@@ -1,54 +1,58 @@
 "use client";
 
-import { Label } from "@components/ui/label";
 import { Input } from "@components/ui/input";
+import { Control, FieldValues, Path } from "react-hook-form";
 import {
-  Control,
-  Controller,
-  FieldErrors,
-  FieldValues,
-  Path,
-} from "react-hook-form";
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@components/ui/form";
 
-interface FormInputProps<T extends FieldValues> {
-  id: Path<T>;
+interface FormInputProps<TFieldValues extends FieldValues> {
+  name: Path<TFieldValues>;
   label: string;
-  control: Control<T>;
-  errors: FieldErrors<T>;
+  control: Control<TFieldValues>;
   placeholder: string;
-  type?: string; // Default is "text"
+  description?: string;
+  type?: "text" | "number" | "email";
 }
 
-const FormInput = <T extends FieldValues>({
-  id,
+const FormInput = <TFieldValues extends FieldValues>({
+  name,
   label,
   control,
-  errors,
   placeholder,
+  description,
   type = "text",
-}: FormInputProps<T>) => {
+}: FormInputProps<TFieldValues>) => {
   return (
-    <div className="space-y-2">
-      <Label htmlFor={id}>{label}</Label>
-      <Controller
-        name={id}
+    <>
+      <FormField
         control={control}
-        rules={{ required: `${label} is required` }}
+        name={name}
         render={({ field }) => (
-          <Input
-            id={id}
-            {...field}
-            placeholder={placeholder}
-            type={type}
-          />
+          <FormItem className="space-y-2">
+            <FormLabel className="text-primary-700">{label}</FormLabel>
+            <FormControl>
+              <div className="relative">
+                <Input
+                  {...field}
+                  id={name}
+                  type={type || "text"}
+                  placeholder={placeholder || "Input here..."}
+                  className="pl-10 border-primary-200 focus:border-primary-500 focus:ring-primary-500"
+                />
+              </div>
+            </FormControl>
+            {description && <FormDescription>{description}</FormDescription>}
+            <FormMessage />
+          </FormItem>
         )}
       />
-      {errors[id] && (
-        <p className="text-destructive text-sm">
-          {errors[id]?.message?.toString()}
-        </p>
-      )}
-    </div>
+    </>
   );
 };
 

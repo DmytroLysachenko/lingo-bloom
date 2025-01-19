@@ -70,8 +70,6 @@ const TestCreationForm = ({
       });
 
       router.push(`/test/${response.data.newTest.id}`);
-
-      // Here you can add logic to redirect to the test page or update the UI
     } catch (error) {
       toast({
         title: "Error",

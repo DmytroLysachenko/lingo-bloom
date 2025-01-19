@@ -1,4 +1,3 @@
-// src/db/user.ts
 import { prisma } from "./prisma";
 
 interface IUser {

@@ -17,7 +17,7 @@ export const POST = apiMiddleware(async (request: NextRequest) => {
 
     if (existingUser) {
       return NextResponse.json(
-        { message: "Email already exists" },
+        { message: "User with this mail already exists" },
         { status: 400 }
       );
     }

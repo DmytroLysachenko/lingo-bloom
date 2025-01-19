@@ -1,4 +1,3 @@
-// src/db/language.ts
 import { prisma } from "./prisma";
 
 interface ILanguage {

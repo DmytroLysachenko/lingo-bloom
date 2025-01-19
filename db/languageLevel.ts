@@ -1,4 +1,3 @@
-// src/db/languageLevel.ts
 import { prisma } from "./prisma";
 
 interface ILanguageLevel {

@@ -1,4 +1,3 @@
-// src/db/taskType.ts
 import { prisma } from "./prisma";
 
 interface ITaskType {

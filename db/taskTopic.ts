@@ -1,4 +1,3 @@
-// src/db/taskTopic.ts
 import { prisma } from "./prisma";
 
 interface ITaskTopic {

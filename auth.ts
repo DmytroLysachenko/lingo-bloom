@@ -25,7 +25,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           throw new Error("Email and password are required");
         }
 
-        // Find user in the database
         const user = await findUserByEmail(email as string);
 
         if (!user) {
@@ -35,8 +34,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         if (user.password === null) {
           return null;
         }
-        //  "This mail is registered through OAuth, try log in with google/github";
-        // Compare password with hashed password
+
         const isPasswordValid = await bcrypt.compare(
           credentials.password as string,
           user.password
@@ -46,12 +44,11 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           throw new Error("Invalid email or password");
         }
 
-        // Return user object if valid
         return {
           id: user.id,
           name: user.name,
           email: user.email,
-          role: user.role, // Include role for role-based access
+          role: user.role,
         };
       },
     }),
@@ -63,7 +60,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.role = user.role; // Ensure user role is stored in the token
+        token.role = user.role;
         token.userId = user.id;
         token.createdAt = user.createdAt;
       }
